@@ -423,4 +423,20 @@ final class ModuleInteractorFactory {
             protectionInteractor: InteractorFactory.shared.protectionInteractor()
         )
     }
+    func encryptedByUserPasswordSyncModuleInteractor() -> EncryptedByUserPasswordSyncModuleInteracting {
+        EncryptedByUserPasswordSyncModuleInteractor(
+            syncMigrationInteractor: InteractorFactory.shared.syncMigrationInteractor()
+        )
+    }
+
+    func exportTokensModuleInteractor() -> ExportTokensModuleInteracting {
+        ExportTokensModuleInteractor(
+            serviceListingInteractor: InteractorFactory.shared.serviceListingInteractor(),
+            notificationsInteractor: InteractorFactory.shared.notificationInteractor(),
+            qrCodeGeneratorInteractor: InteractorFactory.shared.qrCodeGeneratorInteractor(),
+            serviceDefinitionInteractor: InteractorFactory.shared.serviceDefinitionInteractor(),
+            protectionInteractor: InteractorFactory.shared.protectionInteractor(),
+            compressionInteractor: InteractorFactory.shared.compressionInteractor()
+        )
+    }
 }
