@@ -24,10 +24,13 @@ import Common
 protocol MainModuleInteracting: AnyObject {
     var showMigrationToNewestVersion: (() -> Void)? { get set }
     var showiCloudIsEncryptedByUser: (() -> Void)? { get set }
-    var showiCloudIsEncryptedBySystem: (() -> Void)? { get set }
+    var showiCloudIsEncryptedBySystemError: (() -> Void)? { get set }
+    var showiCloudIsEncryptedBySystemSwitch: (() -> Void)? { get set }
     var showNeverVersionOfiCloud: (() -> Void)? { get set }
     var migrationEndedSuccessfuly: (() -> Void)? { get set }
     var migrationError: ((CloudState.NotAvailableReason) -> Void)? { get set }
+    
+    func switchCloudEncryptionToSystemKey()
     
     var secretSyncError: ((String) -> Void)? { get set }
     var isAppLocked: Bool { get }
@@ -54,7 +57,8 @@ protocol MainModuleInteracting: AnyObject {
 final class MainModuleInteractor {
     var showMigrationToNewestVersion: (() -> Void)?
     var showiCloudIsEncryptedByUser: (() -> Void)?
-    var showiCloudIsEncryptedBySystem: (() -> Void)?
+    var showiCloudIsEncryptedBySystemError: (() -> Void)?
+    var showiCloudIsEncryptedBySystemSwitch: (() -> Void)?
     var showNeverVersionOfiCloud: (() -> Void)?
     var migrationEndedSuccessfuly: (() -> Void)?
     var migrationError: ((CloudState.NotAvailableReason) -> Void)?
@@ -112,7 +116,13 @@ final class MainModuleInteractor {
         
         syncMigrationInteractor.showMigrationToNewestVersion = { [weak self] in self?.showMigrationToNewestVersion?() }
         syncMigrationInteractor.showiCloudIsEncryptedByUser = { [weak self] in self?.showiCloudIsEncryptedByUser?() }
-        syncMigrationInteractor.showiCloudIsEncryptedBySystem = { [weak self] in self?.showiCloudIsEncryptedBySystem?() }
+        syncMigrationInteractor.showiCloudIsEncryptedBySystem = { [weak self] in
+            if syncMigrationInteractor.currentEncryption == .system {
+                self?.showiCloudIsEncryptedBySystemError?()
+            } else {
+                self?.showiCloudIsEncryptedBySystemSwitch?()
+            }
+        }
         syncMigrationInteractor.showNeverVersionOfiCloud = { [weak self] in self?.showNeverVersionOfiCloud?() }
         syncMigrationInteractor.migrationEndedSuccessfuly = { [weak self] in self?.migrationEndedSuccessfuly?() }
         syncMigrationInteractor.migrationError = { [weak self] error in self?.migrationError?(error) }
@@ -150,8 +160,13 @@ extension MainModuleInteractor: MainModuleInteracting {
         cloudBackupStateInteractor.clearSaveSuccessSync()
     }
     
+    
     func checkForCompanionApp() {
         appInfoInteractor.update2FASPassMissingDate()
+    }
+
+    func switchCloudEncryptionToSystemKey() {
+        syncMigrationInteractor.switchLocallyToUseSystemPassword()
     }
     
     func setNotificationGroupID() {
