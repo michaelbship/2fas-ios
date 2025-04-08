@@ -118,7 +118,8 @@ final class MainRepositoryImpl: MainRepository {
         SyncInstance.initialize(
             commonSectionHandler: storage.section,
             commonServiceHandler: storage.service,
-            reference: protection.reference
+            reference: protection.reference,
+            localEncryptionKeyData: protection.localEncryptionKeyData
         ) {
             DebugLog("Sync: \($0)")
         }
