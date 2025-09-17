@@ -72,6 +72,7 @@ final class RootPresenter {
     func applicationDidEnterBackground() {
         Log("App: applicationDidEnterBackground")
         
+        interactor.applicationDidEnterBackground()
         interactor.lockApplicationIfNeeded { [weak self] in
             self?.removeCover()
             self?.presentLogin(immediately: true)

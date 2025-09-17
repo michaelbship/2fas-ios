@@ -22,6 +22,22 @@ import Common
 import CryptoKit
 
 extension MainRepositoryImpl {
+    var appState: AppState { _appState }
+    
+    func saveAppState(_ appState: AppState) {
+        _appState = appState
+    }
+    
+    var willURLBeHandled: Bool { _urlWillBeHandled }
+    
+    func clearURLWillBeHandled() {
+        _urlWillBeHandled = false
+    }
+    
+    func markURLWillBeHandled() {
+        _urlWillBeHandled = true
+    }
+
     var currentAppVersion: String {
         appVersion ?? "-"
     }

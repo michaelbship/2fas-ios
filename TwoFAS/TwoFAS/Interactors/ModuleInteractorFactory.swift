@@ -397,7 +397,8 @@ final class ModuleInteractorFactory {
     func loginModuleInteractor() -> LoginModuleInteracting {
         LoginModuleInteractor(
             loginInteractor: InteractorFactory.shared.loginInteractor(),
-            appLockStateInteractor: InteractorFactory.shared.appLockStateInteractor()
+            appLockStateInteractor: InteractorFactory.shared.appLockStateInteractor(),
+            appStateInteractor: InteractorFactory.shared.appStateInteractor()
         )
     }
     

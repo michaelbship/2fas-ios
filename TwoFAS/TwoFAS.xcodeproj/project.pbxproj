@@ -865,6 +865,7 @@
 		C2AE5F852ADC8B0D00AED670 /* Code+LastPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25D5E752A64863000CA359B /* Code+LastPass.swift */; };
 		C2AE5F862ADC8B0D00AED670 /* CodeParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28ECE9F1FEE8273000EBB9D /* CodeParser.swift */; };
 		C2AE5F882ADC8B2300AED670 /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = C2AE5F872ADC8B2300AED670 /* SwiftProtobuf */; };
+		C2AF24792E7B5A9C001475AF /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AF24782E7B5A9C001475AF /* AppState.swift */; };
 		C2AF5F7D28B18CCC00A30DCF /* IconSelectorCollectionViewDelegatee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AF5F7C28B18CCC00A30DCF /* IconSelectorCollectionViewDelegatee.swift */; };
 		C2B0779D292A35730074517F /* UUIDGroupInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B0779C292A35730074517F /* UUIDGroupInput.swift */; };
 		C2B077A1292A75320074517F /* UploadLogsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B077A0292A75320074517F /* UploadLogsPresenter.swift */; };
@@ -2674,6 +2675,7 @@
 		C2AE5F532ADC1A0D00AED670 /* PINType+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PINType+.swift"; sourceTree = "<group>"; };
 		C2AE5F5C2ADC363300AED670 /* ServiceGuideImage+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ServiceGuideImage+.swift"; sourceTree = "<group>"; };
 		C2AE5F6F2ADC86B900AED670 /* CoreAudioTypes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioTypes.framework; path = System/Library/Frameworks/CoreAudioTypes.framework; sourceTree = SDKROOT; };
+		C2AF24782E7B5A9C001475AF /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		C2AF5F7C28B18CCC00A30DCF /* IconSelectorCollectionViewDelegatee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconSelectorCollectionViewDelegatee.swift; sourceTree = "<group>"; };
 		C2B0779C292A35730074517F /* UUIDGroupInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UUIDGroupInput.swift; sourceTree = "<group>"; };
 		C2B077A0292A75320074517F /* UploadLogsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadLogsPresenter.swift; sourceTree = "<group>"; };
@@ -4942,6 +4944,7 @@
 		C240485627652E170076376E /* DataTypes */ = {
 			isa = PBXGroup;
 			children = (
+				C2AF24782E7B5A9C001475AF /* AppState.swift */,
 				C2A2D23228F7513400B5D91E /* ExchangeDataFormat.swift */,
 				C21BC51C25B3660E00B15F99 /* ExchangeData.swift */,
 				C2E881D928F35C030053A89D /* ExchangeData2.swift */,
@@ -10777,6 +10780,7 @@
 				C2E7C3DA2ADB2BA600478D89 /* MainRepositoryImpl+ViewPath.swift in Sources */,
 				C2EA6E5E2BA110FA0034A964 /* MainRepositoryImpl+LocalNotifications.swift in Sources */,
 				C2E7C3C72ADB2B9C00478D89 /* MainRepositoryImpl+Camera.swift in Sources */,
+				C2AF24792E7B5A9C001475AF /* AppState.swift in Sources */,
 				C2E7C4062ADB2BB400478D89 /* PairingWebExtensionInteractor.swift in Sources */,
 				C2E7C4012ADB2BB400478D89 /* TrashingServiceInteractor.swift in Sources */,
 				C2E7C3D82ADB2B9C00478D89 /* MainRepositoryImpl+Storage.swift in Sources */,

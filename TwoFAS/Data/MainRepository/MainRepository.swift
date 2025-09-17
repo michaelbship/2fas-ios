@@ -121,6 +121,13 @@ protocol MainRepository: AnyObject {
     var notificationGroupID: String? { get }
     func createNotificationGroupID()
     
+    var appState: AppState { get }
+    func saveAppState(_ appState: AppState)
+    
+    var willURLBeHandled: Bool { get }
+    func clearURLWillBeHandled()
+    func markURLWillBeHandled()
+    
     // MARK: - Services
     var hasServices: Bool { get }
     
@@ -255,7 +262,7 @@ protocol MainRepository: AnyObject {
     
     // MARK: - Code
     var storedURL: URL? { get }
-    func shouldHandleURL(_ code: URL) -> Bool
+    func handleURL(_ url: URL) -> (canHandle: Bool, shouldSave: Bool)
     func storeURL(_ code: URL)
     func hasStoredURL() -> Bool
     func clearStoredURL()

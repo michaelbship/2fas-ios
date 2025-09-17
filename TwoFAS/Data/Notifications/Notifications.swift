@@ -29,4 +29,5 @@ public extension Notification.Name {
     static let lockScreenIsInactive = Notification.Name("lockScreenIsInactive")
     static let lockScreenIsActive = Notification.Name("lockScreenIsActive")
     static let userLoggedIn = Notification.Name("userLoggedIn")
+    static let appStateDidChange = Notification.Name("appStateDidChange")
 }
