@@ -154,7 +154,8 @@ extension ServiceHandler: CommonServiceHandler {
         // TODO: Update items instead of whiping them out
         removeAllNotTrashed()
         
-        cleanTrash(currentlyInTrash: currentlyInTrash, newServices: newServices)
+        let listForDeletition = prepareForTrashRemoval(currentlyInTrash: currentlyInTrash, newServices: newServices)
+        cleanTrash(listForDeletition)
         
         let reorderedWhileAdded = addServices(servicesWithUpdatedCounters.sortedBySection)
         
@@ -224,14 +225,14 @@ extension ServiceHandler: CommonServiceHandler {
                     reorderedWhileAdded.append(s.secret)
                 }
                 
-                createEntity(from: s, sectionOrder: index)
+                createEntity(from: s, sectionOrder: index, counter: nil)
             }
         }
         
         return reorderedWhileAdded
     }
     
-    private func addServicesAtEndOfSections(_ services: [ServiceData]) {
+    private func addServicesAtEndOfSections(_ services: [ServiceData], counters: [Secret: Int]) {
         Log("ServiceHandler in Storage: addServicesAtEndOfSections. Count: \(services.count)", module: .storage)
         
         var currentCountInSections = getAllServices()
@@ -243,15 +244,13 @@ extension ServiceHandler: CommonServiceHandler {
         for (sectionID, services) in servicesInSections {
             services.forEach { s in
                 let currentServicesCount = currentCountInSections[sectionID] ?? 0
-                
-                createEntity(from: s, sectionOrder: currentServicesCount)
-                
+                createEntity(from: s, sectionOrder: currentServicesCount, counter: counters[s.secret])
                 currentCountInSections[sectionID] = currentServicesCount + 1
             }
         }
     }
     
-    private func createEntity(from s: ServiceData, sectionOrder: Int) {
+    private func createEntity(from s: ServiceData, sectionOrder: Int, counter: Int?) {
         ServiceEntity.create(
             on: coreDataStack.context,
             name: s.name,
@@ -272,7 +271,7 @@ extension ServiceHandler: CommonServiceHandler {
             sectionID: s.sectionID,
             sectionOrder: sectionOrder,
             algorithm: s.algorithm.rawValue,
-            counter: s.counter,
+            counter: counter ?? s.counter,
             tokenType: s.tokenType.rawValue,
             source: s.source.rawValue
         )
@@ -299,7 +298,10 @@ extension ServiceHandler: CommonServiceHandler {
         coreDataStack.save()
     }
     
-    private func cleanTrash(currentlyInTrash: [ServiceData], newServices: [ServiceData]) {
+    private func prepareForTrashRemoval(
+        currentlyInTrash: [ServiceData],
+        newServices: [ServiceData]
+    ) -> [ServiceEntity] {
         let inTrashNowAdded: [ServiceData] = currentlyInTrash.compactMap({ current in
             if newServices.contains(current.secret) {
                 return current
@@ -312,6 +314,10 @@ extension ServiceHandler: CommonServiceHandler {
         let forDeletition = inTrashNowAdded.compactMap {
             ServiceEntity.getService(on: coreDataStack.context, encryptedSecret: $0.secret.encrypt())
         }
+        return forDeletition
+    }
+    
+    private func cleanTrash(_ forDeletition: [ServiceEntity]) {
         forDeletition.forEach { ServiceEntity.delete(on: coreDataStack.context, serviceEntity: $0) }
         
         coreDataStack.save()
@@ -355,8 +361,15 @@ public extension ServiceHandler {
         let newServices = services.filter {
             !currentServices.contains($0.secret) || trashedServicesSecrets.contains($0.secret)
         }
-        cleanTrash(currentlyInTrash: trashedServices, newServices: services)
-        addServicesAtEndOfSections(newServices)
+        
+        let listForDeletition = prepareForTrashRemoval(currentlyInTrash: trashedServices, newServices: services)
+        let counterState: [Secret: Int] = listForDeletition.reduce(into: [Secret: Int]()) { result, entity in
+            if entity.tokenType == TokenType.hotp.rawValue, let counter = entity.counter {
+                result[entity.secret] = counter.intValue
+            }
+        }
+        cleanTrash(listForDeletition)
+        addServicesAtEndOfSections(newServices, counters: counterState)
         coreDataStack.save()
         
         newServices.forEach { commonDidCreate?($0.secret) }
