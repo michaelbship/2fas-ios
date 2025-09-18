@@ -1,6 +1,6 @@
 //
 //  This file is part of the 2FAS iOS app (https://github.com/twofas/2fas-ios)
-//  Copyright © 2023 Two Factor Authentication Service, Inc.
+//  Copyright © 2025 Two Factor Authentication Service, Inc.
 //  Contributed by Zbigniew Cisiński. All rights reserved.
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,27 @@
 //
 
 import Foundation
+import Data
 
-enum ImporterOpenFileError {
-    case cantReadFile(reason: String?)
-    case newerSchema
-    case noNewServices
+protocol ExportQuestionPINVerificationModuleInteracting: AnyObject {
+    var currentCodeLength: Int { get }
+    func verifyCode(_ code: [Int]) -> Bool
+}
+
+final class ExportQuestionPINVerificationModuleInteractor {
+    private let protectionInteractor: ProtectionInteracting
+    
+    init(protectionInteractor: ProtectionInteracting) {
+        self.protectionInteractor = protectionInteractor
+    }
+}
+
+extension ExportQuestionPINVerificationModuleInteractor: ExportQuestionPINVerificationModuleInteracting {
+    var currentCodeLength: Int {
+        protectionInteractor.currentCodeLength
+    }
+    
+    func verifyCode(_ code: [Int]) -> Bool {
+        protectionInteractor.isPINCorrect(code)
+    }
 }

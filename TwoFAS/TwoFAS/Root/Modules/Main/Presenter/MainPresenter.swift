@@ -58,7 +58,7 @@ final class MainPresenter {
     }
     
     func handleSwitchToExternalImport() {
-        view?.navigateToViewPath(.settings(option: .externalImport))
+        view?.navigateToViewPath(.settings(option: .transfer))
     }
     
     func handleSwitchToBackup() {

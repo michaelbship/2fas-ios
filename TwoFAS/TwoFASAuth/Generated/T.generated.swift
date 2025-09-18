@@ -835,6 +835,16 @@ internal enum T {
     /// No application that supports this link
     internal static let noApp = T.tr("Localizable", "errors__no_app", fallback: "No application that supports this link")
   }
+  internal enum Exportwarning {
+    /// Save to file
+    internal static let cta = T.tr("Localizable", "exportwarning__cta", fallback: "Save to file")
+    /// You are about to export all of your 2FA Tokens, including their Secret Keys, into an unencrypted file. Anyone with access to this file can use it to take control of your accounts. Please keep it safe and delete it after use.
+    internal static let description = T.tr("Localizable", "exportwarning__description", fallback: "You are about to export all of your 2FA Tokens, including their Secret Keys, into an unencrypted file. Anyone with access to this file can use it to take control of your accounts. Please keep it safe and delete it after use.")
+    /// Save all Tokens to file
+    internal static let title = T.tr("Localizable", "exportwarning__title", fallback: "Save all Tokens to file")
+    /// I understand the risk
+    internal static let toggle = T.tr("Localizable", "exportwarning__toggle", fallback: "I understand the risk")
+  }
   internal enum Extension {
     /// Approve
     internal static let approve = T.tr("Localizable", "extension__approve", fallback: "Approve")
@@ -1181,12 +1191,10 @@ internal enum T {
     internal static let enableCrashlytics = T.tr("Localizable", "settings__enable_crashlytics", fallback: "Send anonymous crash reports")
     /// Send anonymous crash reports to help 2FAS identify and solve issues in the app (app restart required).
     internal static let enableCrashlyticsDescription = T.tr("Localizable", "settings__enable_crashlytics_description", fallback: "Send anonymous crash reports to help 2FAS identify and solve issues in the app (app restart required).")
-    /// Copy to clipboard
-    internal static let exportOptionsCopyClipboard = T.tr("Localizable", "settings__export_options_copy_clipboard", fallback: "Copy to clipboard")
     /// Export QR codes
     internal static let exportOptionsExportQrCodes = T.tr("Localizable", "settings__export_options_export_qr_codes", fallback: "Export QR codes")
-    /// Choose how you would like to export your Tokens. You can copy them to clipboard, save as an OTPAuth file, or export as QR codes.
-    internal static let exportOptionsFooter = T.tr("Localizable", "settings__export_options_footer", fallback: "Choose how you would like to export your Tokens. You can copy them to clipboard, save as an OTPAuth file, or export as QR codes.")
+    /// Choose how you would like to export your Tokens. You can save them as an OTPAuth file or export them as QR codes.
+    internal static let exportOptionsFooter = T.tr("Localizable", "settings__export_options_footer", fallback: "Choose how you would like to export your Tokens. You can save them as an OTPAuth file or export them as QR codes.")
     /// Save OTPAuth file
     internal static let exportOptionsSaveFile = T.tr("Localizable", "settings__export_options_save_file", fallback: "Save OTPAuth file")
     /// Your Secret Keys are protected. Please add a PIN or Biometry lock to export them.
@@ -1214,28 +1222,16 @@ internal enum T {
     /// Select the maximum number of unsuccessful attempts to enter the passcode before locking the application (lockout time can be changed below).
     /// 
     internal static let howManyAttemptsFooter = T.tr("Localizable", "settings__how_many_attempts_footer", fallback: "Select the maximum number of unsuccessful attempts to enter the passcode before locking the application (lockout time can be changed below).\n")
-    /// Clipboard is empty or doesn't contain a supported link format.
-    internal static let importClipboardEmpty = T.tr("Localizable", "settings__import_clipboard_empty", fallback: "Clipboard is empty or doesn't contain a supported link format.")
-    /// Importing Tokens from clipboard
-    internal static let importContentsClipboard = T.tr("Localizable", "settings__import_contents_clipboard", fallback: "Importing Tokens from clipboard")
     /// Importing Tokens from text file
     internal static let importContentsFile = T.tr("Localizable", "settings__import_contents_file", fallback: "Importing Tokens from text file")
-    /// Import Tokens from clipboard
-    internal static let importFromClipboard = T.tr("Localizable", "settings__import_from_clipboard", fallback: "Import Tokens from clipboard")
-    /// Clipboard should contain a list of links starting with 'otpauth://'.
-    internal static let importFromClipboardDescription = T.tr("Localizable", "settings__import_from_clipboard_description", fallback: "Clipboard should contain a list of links starting with 'otpauth://'.")
     /// Import from file
     internal static let importFromFile = T.tr("Localizable", "settings__import_from_file", fallback: "Import from file")
     /// Import Tokens from text file
     internal static let importFromTextFile = T.tr("Localizable", "settings__import_from_text_file", fallback: "Import Tokens from text file")
     /// Text file should contain a list of links starting with 'otpauth://'.
     internal static let importFromTextFileDescription = T.tr("Localizable", "settings__import_from_text_file_description", fallback: "Text file should contain a list of links starting with 'otpauth://'.")
-    /// Import Tokens from the OTPAuth text file or the OTPAuth clipboard
-    internal static let importOtpauthFooter = T.tr("Localizable", "settings__import_otpauth_footer", fallback: "Import Tokens from the OTPAuth text file or the OTPAuth clipboard")
     /// OTPAuth links
     internal static let importOtpauthTitle = T.tr("Localizable", "settings__import_otpauth_title", fallback: "OTPAuth links")
-    /// Import from clipboard
-    internal static let importReadFromClipboard = T.tr("Localizable", "settings__import_read_from_clipboard", fallback: "Import from clipboard")
     /// Your support allows us to develop new features and improvements. Thank you!
     internal static let infoFooter = T.tr("Localizable", "settings__info_footer", fallback: "Your support allows us to develop new features and improvements. Thank you!")
     /// It matters
@@ -1353,6 +1349,8 @@ internal enum T {
     internal static let tooManyAttemptsHeader = T.tr("Localizable", "settings__too_many_attempts_header", fallback: "Block after X failed attempts:")
     /// Touch ID
     internal static let touchId = T.tr("Localizable", "settings__touch_id", fallback: "Touch ID")
+    /// Transfer
+    internal static let transfer = T.tr("Localizable", "settings__transfer", fallback: "Transfer")
     /// Trash
     internal static let trash = T.tr("Localizable", "settings__trash", fallback: "Trash")
     /// Trash is Empty
@@ -1728,6 +1726,18 @@ internal enum T {
     internal static func youWillNotBeAbleToSignInToYour(_ p1: Any, _ p2: Any) -> String {
       return T.tr("Localizable", "tokens__you_will_not_be_able_to_sign_in_to_your", String(describing: p1), String(describing: p2), fallback: "You will be unable to sign in to your %@ account without this Token as long as you have two-factor authentication for %@ enabled.\n\nYou will be unable to restore this Token from 2FAS trash.")
     }
+  }
+  internal enum Transfer {
+    /// Save all Tokens in the OTPAuth file
+    internal static let exportOtpFile = T.tr("Localizable", "transfer__export_otp_file", fallback: "Save all Tokens in the OTPAuth file")
+    /// Save all Tokens as QR codes
+    internal static let exportOtpQr = T.tr("Localizable", "transfer__export_otp_qr", fallback: "Save all Tokens as QR codes")
+    /// Export to OTPAuth
+    internal static let exportSectionTitle = T.tr("Localizable", "transfer__export_section_title", fallback: "Export to OTPAuth")
+    /// General OTPAuth file
+    internal static let importOtpauthFile = T.tr("Localizable", "transfer__import_otpauth_file", fallback: "General OTPAuth file")
+    /// Import from other apps
+    internal static let importSectionTitle = T.tr("Localizable", "transfer__import_section_title", fallback: "Import from other apps")
   }
   internal enum Voiceover {
     /// Add Group

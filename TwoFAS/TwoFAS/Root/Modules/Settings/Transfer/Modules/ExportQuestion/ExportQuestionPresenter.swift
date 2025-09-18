@@ -17,10 +17,22 @@
 //  along with this program. If not, see <https://www.gnu.org/licenses/>
 //
 
-import Foundation
+import SwiftUI
 
-enum ImporterOpenFileError {
-    case cantReadFile(reason: String?)
-    case newerSchema
-    case noNewServices
+final class ExportQuestionPresenter: ObservableObject {
+    private let flowController: ExportQuestionFlowControlling
+    
+    init(flowController: ExportQuestionFlowControlling) {
+        self.flowController = flowController
+    }
+}
+
+extension ExportQuestionPresenter {
+    func handleClose() {
+        flowController.toClose()
+    }
+    
+    func handleShowPIN() {
+        flowController.toPINKeyboard()
+    }
 }

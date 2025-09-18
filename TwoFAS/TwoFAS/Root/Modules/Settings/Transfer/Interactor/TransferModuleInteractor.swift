@@ -22,7 +22,7 @@ import Data
 import Common
 import CryptoKit
 
-protocol ExportTokensModuleInteracting: AnyObject {
+protocol TransferModuleInteracting: AnyObject {
     var hasServices: Bool { get }
     var hasPIN: Bool { get }
     func copyToClipboardGeneratedCodes(message: String)
@@ -31,7 +31,7 @@ protocol ExportTokensModuleInteracting: AnyObject {
     func cleanupTemporaryFiles(urls: [URL])
 }
 
-final class ExportTokensModuleInteractor {
+final class TransferModuleInteractor {
     private let serviceListingInteractor: ServiceListingInteracting
     private let notificationsInteractor: NotificationInteracting
     private let qrCodeGeneratorInteractor: QRCodeGeneratorInteracting
@@ -66,7 +66,7 @@ final class ExportTokensModuleInteractor {
     }
 }
 
-extension ExportTokensModuleInteractor: ExportTokensModuleInteracting {
+extension TransferModuleInteractor: TransferModuleInteracting {
     func createOTPAuthCodesFile() -> URL? {
         let contents = generateOTPAuthCodes().utf8
         let data = Data(contents)
@@ -92,13 +92,13 @@ extension ExportTokensModuleInteractor: ExportTokensModuleInteracting {
             do {
                 try fileManager.removeItem(at: url)
             } catch {
-                Log("ExportTokensModuleInteractor: Failed to remove temporary file \(url.lastPathComponent): \(error)")
+                Log("TransferModuleInteractor: Failed to remove temporary file \(url.lastPathComponent): \(error)")
             }
         }
     }
 }
 
-private extension ExportTokensModuleInteractor {
+private extension TransferModuleInteractor {
     func generateOTPAuthCodes() -> String {
         serviceListingInteractor.listAll()
             .map { serviceDefinitionInteractor.otpAuth(from: $0) }
@@ -110,25 +110,25 @@ private extension ExportTokensModuleInteractor {
         
         var createdURLs: [URL] = []
         
-        Log("ExportTokensModuleInteractor: Creating \(filePairs.count) temporary files in \(tempDirectory.path)")
+        Log("TransferModuleInteractor: Creating \(filePairs.count) temporary files in \(tempDirectory.path)")
         
         for (filename, data) in filePairs {
             let fileURL = URL(fileURLWithPath: tempDirectory.appendingPathComponent(filename).path())
             
-            Log("ExportTokensModuleInteractor: Creating file: \(filename) at \(fileURL.path)")
+            Log("TransferModuleInteractor: Creating file: \(filename) at \(fileURL.path)")
             
             do {
                 try data.write(to: fileURL, options: .atomic)
                 createdURLs.append(fileURL)
             } catch {
-                Log("ExportTokensModuleInteractor: Failed to create temporary file \(filename): \(error)")
+                Log("TransferModuleInteractor: Failed to create temporary file \(filename): \(error)")
                 let errorCode = (error as NSError).code
                 let domain = (error as NSError).domain
-                Log("ExportTokensModuleInteractor: Error details - code: \(errorCode), domain: \(domain)")
+                Log("TransferModuleInteractor: Error details - code: \(errorCode), domain: \(domain)")
             }
         }
         
-        Log("ExportTokensModuleInteractor: Created \(createdURLs.count) out of \(filePairs.count) files")
+        Log("TransferModuleInteractor: Created \(createdURLs.count) out of \(filePairs.count) files")
         
         return createdURLs
     }
@@ -138,12 +138,12 @@ private extension ExportTokensModuleInteractor {
             .map { serviceDefinitionInteractor.otpAuth(from: $0) }
         var result: [String: Data] = [:]
         
-        Log("ExportTokensModuleInteractor: Generating QR codes for \(list.count) services")
+        Log("TransferModuleInteractor: Generating QR codes for \(list.count) services")
         
         await withTaskGroup(of: (String, Data?).self) { group in
             for (index, secret) in list.enumerated() {
                 group.addTask {
-                    Log("ExportTokensModuleInteractor: Generating QR code \(index + 1)/\(list.count)")
+                    Log("TransferModuleInteractor: Generating QR code \(index + 1)/\(list.count)")
                     let qrCode = await self.createQRCode(link: secret)
                     return (secret, qrCode)
                 }
@@ -153,14 +153,14 @@ private extension ExportTokensModuleInteractor {
                 if let qrCode {
                     let filename = createQRCodeImageName(from: secret)
                     result[filename] = qrCode
-                    Log("ExportTokensModuleInteractor: Generated QR code: \(filename)")
+                    Log("TransferModuleInteractor: Generated QR code: \(filename)")
                 } else {
-                    Log("ExportTokensModuleInteractor: Failed to generate QR code for secret")
+                    Log("TransferModuleInteractor: Failed to generate QR code for secret")
                 }
             }
         }
         
-        Log("ExportTokensModuleInteractor: Generated \(result.count) QR codes")
+        Log("TransferModuleInteractor: Generated \(result.count) QR codes")
         return result
     }
     
@@ -179,16 +179,16 @@ private extension ExportTokensModuleInteractor {
         )
         
         guard let qrCode else {
-            Log("ExportTokensModuleInteractor: Failed to generate QR code image")
+            Log("TransferModuleInteractor: Failed to generate QR code image")
             return nil
         }
         
         guard let pngData = qrCode.pngData() else {
-            Log("ExportTokensModuleInteractor: Failed to convert QR code to PNG data")
+            Log("TransferModuleInteractor: Failed to convert QR code to PNG data")
             return nil
         }
         
-        Log("ExportTokensModuleInteractor: Successfully created QR code PNG data: \(pngData.count) bytes")
+        Log("TransferModuleInteractor: Successfully created QR code PNG data: \(pngData.count) bytes")
         return pngData
     }
 }

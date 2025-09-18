@@ -199,19 +199,11 @@ extension SettingsFlowController: SettingsMenuFlowControllerParent {
         }
     }
     
-    func toExternalImport() {
+    func toTransfer() {
         if isCollapsed {
-            ExternalImportFlowController.push(in: viewController.navigationNavi, parent: self)
+            TransferFlowController.push(in: viewController.navigationNavi, parent: self)
         } else {
-            ExternalImportFlowController.showAsRoot(in: viewController.contentNavi, parent: self)
-        }
-    }
-    
-    func toExportTokens() {
-        if isCollapsed {
-            ExportTokensFlowController.push(in: viewController.navigationNavi, parent: self)
-        } else {
-            ExportTokensFlowController.showAsRoot(in: viewController.contentNavi, parent: self)
+            TransferFlowController.showAsRoot(in: viewController.contentNavi, parent: self)
         }
     }
     
@@ -267,6 +259,5 @@ extension SettingsFlowController: AppleWatchFlowControllerParent {
 extension SettingsFlowController: TrashFlowControllerParent {}
 extension SettingsFlowController: BrowserExtensionMainFlowControllerParent {}
 extension SettingsFlowController: AboutFlowControllerParent {}
-extension SettingsFlowController: ExternalImportFlowControllerParent {}
-extension SettingsFlowController: ExportTokensFlowControllerParent {}
+extension SettingsFlowController: TransferFlowControllerParent {}
 extension SettingsFlowController: AppearanceFlowControllerParent {}

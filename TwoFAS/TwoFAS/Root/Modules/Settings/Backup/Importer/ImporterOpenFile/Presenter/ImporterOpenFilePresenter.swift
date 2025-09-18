@@ -49,13 +49,7 @@ extension ImporterOpenFilePresenter {
     func start() {
         guard !didHandleURL else { return }
         didHandleURL = true
-        if interactor.isFromClipboard {
-            if let data = interactor.readClipboard() {
-                parseData(data)
-            } else {
-                flowController.toEmptyClipboard()
-            }
-        } else if let url = interactor.url {
+        if let url = interactor.url {
             handleFileOpen(url)
         } else {
             flowController.toOpenFile()
@@ -67,21 +61,6 @@ private extension ImporterOpenFilePresenter {
     func parseData(_ data: Data) {
         guard let result = interactor.parseContent(data) else {
             flowController.toFileError(error: .cantReadFile(reason: nil))
-            return
-        }
-        if interactor.isFromClipboard, case ImportFromFileParsing.authenticatorPro(let data) = result {
-            let parseResult = interactor.parseAuthenticatorPro(data) // same OTP Auth file
-            if parseResult.isEmpty {
-                flowController.toEmptyClipboard()
-            } else {
-                flowController.toPreimportSummary(
-                    countNew: interactor.countNewServices(parseResult),
-                    countTotal: data.count,
-                    sections: [],
-                    services: parseResult,
-                    externalImportService: .clipboard
-                )
-            }
             return
         }
         switch result {

@@ -19,16 +19,19 @@
 
 import UIKit
 
-protocol ExternalImportViewControlling: AnyObject {
-    func reload(with data: [ExternalImportSection])
+protocol TransferViewControlling: AnyObject {
+    func reload(with data: [TransferSection])
+    func exporting()
+    func unlock()
+    func lock()
 }
 
-final class ExternalImportViewController: UIViewController {
-    var presenter: ExternalImportPresenter!
+final class TransferViewController: UIViewController {
+    var presenter: TransferPresenter!
     
     private let tableView = SettingsMenuTableView()
     
-    private var tableViewAdapter: TableViewAdapter<ExternalImportSection, ExternalImportCell>!
+    private var tableViewAdapter: TableViewAdapter<TransferSection, TransferCell>!
     
     private let footerStackView: UIStackView = {
         let stack = UIStackView()
@@ -43,6 +46,8 @@ final class ExternalImportViewController: UIViewController {
     
     private var leadingRegular: NSLayoutConstraint?
     private var trailingRegular: NSLayoutConstraint?
+    
+    private var spinnerBarButtonItem: UIBarButtonItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +71,7 @@ final class ExternalImportViewController: UIViewController {
         
         setupViewLayout()
                 
-        title = T.Settings.externalImport
+        title = T.Settings.transfer
     }
     
     private func setupViewLayout() {
@@ -103,12 +108,44 @@ final class ExternalImportViewController: UIViewController {
         presenter.viewWillAppear()
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+}
+
+extension TransferViewController: TransferViewControlling {
+    func reload(with data: [TransferSection]) {
+        let snapshot = TableViewDataSnapshot<TransferSection, TransferCell>()
+        data.forEach { snapshot.appendSection($0) }
+        tableViewAdapter.apply(snapshot: snapshot)
+    }
+    
+    func exporting() {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.startAnimating()
+        
+        spinnerBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+        navigationItem.rightBarButtonItems = [spinnerBarButtonItem!]
+        view.isUserInteractionEnabled = false
+    }
+    func unlock() {
+        navigationItem.rightBarButtonItems = nil
+        view.isUserInteractionEnabled = true
+        spinnerBarButtonItem = nil
+    }
+    
+    func lock() {
+        tableView.isUserInteractionEnabled = false
+    }
+}
+
+private extension TransferViewController {
     @objc
-    private func shouldRefresh() {
+    func shouldRefresh() {
         presenter.handleBecomeActive()
     }
     
-    private func setupConstraints() {
+    func setupConstraints() {
         switch traitCollection.horizontalSizeClass {
         case .regular:
             leadingRegular?.isActive = true
@@ -116,7 +153,7 @@ final class ExternalImportViewController: UIViewController {
             
             leadingCompact?.isActive = false
             trailingCompact?.isActive = false
-        
+            
         case .compact, .unspecified: fallthrough
         @unknown default:
             leadingRegular?.isActive = false
@@ -127,34 +164,23 @@ final class ExternalImportViewController: UIViewController {
         }
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-}
-
-extension ExternalImportViewController: ExternalImportViewControlling {
-    func reload(with data: [ExternalImportSection]) {
-        let snapshot = TableViewDataSnapshot<ExternalImportSection, ExternalImportCell>()
-        data.forEach { snapshot.appendSection($0) }
-        tableViewAdapter.apply(snapshot: snapshot)
-    }
-}
-
-extension ExternalImportViewController {
-    func cell(for data: ExternalImportCell, in tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
+    func cell(for data: TransferCell, in tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: SettingsMenuTableViewCell.identifier,
             for: indexPath
         ) as? SettingsMenuTableViewCell else { return UITableViewCell() }
         cell.disableIconBorder()
         cell.update(icon: data.icon, title: data.title, kind: .arrow)
+        if !data.isActive {
+            cell.disable()
+        }
         
         return cell
     }
     
     func titleForHeader(
         offset: Int,
-        snapshot: TableViewDataSnapshot<ExternalImportSection, ExternalImportCell>
+        snapshot: TableViewDataSnapshot<TransferSection, TransferCell>
     ) -> String? {
         let section = snapshot.section(at: offset)
         return section.title
@@ -162,13 +188,13 @@ extension ExternalImportViewController {
     
     func titleForFooter(
         offset: Int,
-        snapshot: TableViewDataSnapshot<ExternalImportSection, ExternalImportCell>
+        snapshot: TableViewDataSnapshot<TransferSection, TransferCell>
     ) -> String? {
         let section = snapshot.section(at: offset)
         return section.footer
     }
     
-    func didSelect(tableView: UITableView, indexPath: IndexPath, data: ExternalImportCell) {
+    func didSelect(tableView: UITableView, indexPath: IndexPath, data: TransferCell) {
         tableView.deselectRow(at: indexPath, animated: true)
         presenter.handleSelection(at: indexPath)
     }

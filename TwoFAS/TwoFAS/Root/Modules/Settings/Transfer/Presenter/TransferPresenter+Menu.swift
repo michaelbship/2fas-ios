@@ -19,34 +19,43 @@
 
 import UIKit
 
-struct ExternalImportSection: TableViewSection {
+struct TransferSection: TableViewSection {
     let title: String
-    var cells: [ExternalImportCell]
+    var cells: [TransferCell]
     let footer: String
 }
 
-struct ExternalImportCell: Hashable {
-    enum ExternalImportAction: Hashable {
+struct TransferCell: Hashable {
+    enum TransferAction: Hashable {
         case aegis
         case raivo
         case lastPass
         case googleAuth
         case andOTP
         case authenticatorPro
-        case file
-        case clipboard
+        case otpAuthFileImport
+        case otpAuthFileExport
+        case exportQRCodes
     }
     
     let icon: UIImage?
     let title: String
-    let action: ExternalImportAction
+    let action: TransferAction
+    let isActive: Bool
+    
+    init(icon: UIImage?, title: String, action: TransferAction, isActive: Bool = true) {
+        self.icon = icon
+        self.title = title
+        self.action = action
+        self.isActive = isActive
+    }
 }
 
-extension ExternalImportPresenter {
-    func buildMenu() -> [ExternalImportSection] {
+extension TransferPresenter {
+    func buildMenu() -> [TransferSection] {
         [
-            ExternalImportSection(
-                title: T.externalimportSelectApp,
+            TransferSection(
+                title: T.Transfer.importSectionTitle,
                 cells: [
                     .init(
                         icon: Asset.externalImportIconAegis.image,
@@ -77,25 +86,32 @@ extension ExternalImportPresenter {
                         icon: Asset.externalImportIconAuthenticatorPro.image,
                         title: T.Externalimport.authenticatorpro,
                         action: .authenticatorPro
+                    ),
+                    .init(
+                        icon: UIImage(systemName: "doc.fill")!,
+                        title: T.Transfer.importOtpauthFile,
+                        action: .otpAuthFileImport
                     )
                 ],
                 footer: T.externalimportDescription
             ),
-            ExternalImportSection(
-                title: T.Settings.importOtpauthTitle,
+            TransferSection(
+                title: T.Transfer.exportSectionTitle,
                 cells: [
                     .init(
                         icon: UIImage(systemName: "doc.fill")!,
-                        title: T.Settings.importFromFile,
-                        action: .file
+                        title: T.Transfer.exportOtpFile,
+                        action: .otpAuthFileExport,
+                        isActive: interactor.hasServices
                     ),
                     .init(
-                        icon: UIImage(systemName: "list.clipboard.fill")!,
-                        title: T.Settings.importReadFromClipboard,
-                        action: .clipboard
+                        icon: UIImage(systemName: "qrcode")!,
+                        title: T.Transfer.exportOtpQr,
+                        action: .exportQRCodes,
+                        isActive: interactor.hasServices
                     )
                 ],
-                footer: T.Settings.importOtpauthFooter
+                footer: T.Settings.exportOptionsFooter
             )
         ]
     }

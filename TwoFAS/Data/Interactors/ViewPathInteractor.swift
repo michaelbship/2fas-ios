@@ -22,8 +22,7 @@ import Common
 
 public enum ViewPath: Equatable, Codable {
     public enum Settings: String, Equatable, Codable {
-        case externalImport
-        case exportTokens
+        case transfer
         case backup
         case security
         case browserExtension
