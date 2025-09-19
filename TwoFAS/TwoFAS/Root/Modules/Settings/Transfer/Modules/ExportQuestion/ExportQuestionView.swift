@@ -34,26 +34,29 @@ struct ExportQuestionView: View {
                 VStack(spacing: spacing) {
                     Spacer()
                     
-                    Image("exportBackup")
+                    Asset.exportBackup.swiftUIImage
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 280, height: 200)
                     
                     Spacer()
                     
-                    Text(T.Exportwarning.title)
+                    Text(exportType.title)
                         .font(.title)
                         .fontWeight(.light)
+                        .minimumScaleFactor(0.8)
                         .multilineTextAlignment(.center)
                     
                     Spacer()
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.horizontal, 2 * spacing)
+                .frame(width: Theme.Metrics.componentWidth, alignment: .center)
                 
                 VStack(spacing: 3 * spacing) {
                     VStack {
-                        Text(T.Exportwarning.description)
+                        Text(exportType.message)
                             .font(.body)
+                            .minimumScaleFactor(0.8)
                         
                         Spacer()
                         
@@ -67,7 +70,7 @@ struct ExportQuestionView: View {
                         Button(action: {
                             presenter.handleShowPIN()
                         }) {
-                            Text(T.Backup.exportToFile)
+                            Text(exportType.cta)
                         }
                         .buttonStyle(RoundedFilledConstantWidthStateButtonStyle(isDisabled: !enableSave))
                         .disabled(!enableSave)
@@ -85,6 +88,29 @@ struct ExportQuestionView: View {
             }
             .navigationBarHidden(true)
             .frame(alignment: .center)
+        }
+    }
+}
+
+private extension ExportQuestionType {
+    var title: String {
+        switch self {
+        case .file: T.Exportwarning.titleFile
+        case .qr: T.Exportwarning.titleQr
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .file: T.Exportwarning.descriptionFile
+        case .qr: T.Exportwarning.descriptionQr
+        }
+    }
+    
+    var cta: String {
+        switch self {
+        case .file: T.Exportwarning.ctaFile
+        case .qr: T.Exportwarning.ctaQr
         }
     }
 }
