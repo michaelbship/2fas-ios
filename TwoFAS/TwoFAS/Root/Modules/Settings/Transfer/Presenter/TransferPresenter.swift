@@ -32,9 +32,6 @@ final class TransferPresenter {
 
     func viewWillAppear() {
         reload()
-        if !interactor.hasServices {
-            view?.lock()
-        }
     }
     
     func handleSelection(at indexPath: IndexPath) {

@@ -838,16 +838,16 @@ internal enum T {
   internal enum Exportwarning {
     /// Export to file
     internal static let ctaFile = T.tr("Localizable", "exportwarning__cta_file", fallback: "Export to file")
-    /// Export to QR codes
-    internal static let ctaQr = T.tr("Localizable", "exportwarning__cta_qr", fallback: "Export to QR codes")
+    /// Export as QR codes
+    internal static let ctaQr = T.tr("Localizable", "exportwarning__cta_qr", fallback: "Export as QR codes")
     /// You are about to export all of your 2FA Tokens, including their Secret Keys, into an unencrypted file. Anyone with access to this file can use it to take control of your accounts. Please keep it safe.
     internal static let descriptionFile = T.tr("Localizable", "exportwarning__description_file", fallback: "You are about to export all of your 2FA Tokens, including their Secret Keys, into an unencrypted file. Anyone with access to this file can use it to take control of your accounts. Please keep it safe.")
     /// You are about to export all of your 2FA Tokens into an unencrypted ZIP file with QR codes inside. Those QR codes can be used to take control of your accounts. Please keep them safe.
     internal static let descriptionQr = T.tr("Localizable", "exportwarning__description_qr", fallback: "You are about to export all of your 2FA Tokens into an unencrypted ZIP file with QR codes inside. Those QR codes can be used to take control of your accounts. Please keep them safe.")
-    /// Export all Tokens to file
-    internal static let titleFile = T.tr("Localizable", "exportwarning__title_file", fallback: "Export all Tokens to file")
-    /// Export all Tokens to QR codes
-    internal static let titleQr = T.tr("Localizable", "exportwarning__title_qr", fallback: "Export all Tokens to QR codes")
+    /// Export Tokens to file
+    internal static let titleFile = T.tr("Localizable", "exportwarning__title_file", fallback: "Export Tokens to file")
+    /// Export Tokens as QR codes
+    internal static let titleQr = T.tr("Localizable", "exportwarning__title_qr", fallback: "Export Tokens as QR codes")
     /// I understand the risk
     internal static let toggle = T.tr("Localizable", "exportwarning__toggle", fallback: "I understand the risk")
   }
@@ -1199,8 +1199,8 @@ internal enum T {
     internal static let enableCrashlyticsDescription = T.tr("Localizable", "settings__enable_crashlytics_description", fallback: "Send anonymous crash reports to help 2FAS identify and solve issues in the app (app restart required).")
     /// Export QR codes
     internal static let exportOptionsExportQrCodes = T.tr("Localizable", "settings__export_options_export_qr_codes", fallback: "Export QR codes")
-    /// Choose how you would like to export your Tokens. You can export them as an OTPAuth file or save them as QR codes.
-    internal static let exportOptionsFooter = T.tr("Localizable", "settings__export_options_footer", fallback: "Choose how you would like to export your Tokens. You can export them as an OTPAuth file or save them as QR codes.")
+    /// Choose how you would like to export your Tokens. You can export them as an OTPAuth file or as QR codes.
+    internal static let exportOptionsFooter = T.tr("Localizable", "settings__export_options_footer", fallback: "Choose how you would like to export your Tokens. You can export them as an OTPAuth file or as QR codes.")
     /// Save OTPAuth file
     internal static let exportOptionsSaveFile = T.tr("Localizable", "settings__export_options_save_file", fallback: "Save OTPAuth file")
     /// Your Secret Keys are protected. Please add a PIN or Biometry lock to export them.
@@ -1734,10 +1734,10 @@ internal enum T {
     }
   }
   internal enum Transfer {
-    /// Export all Tokens to the OTPAuth file
-    internal static let exportOtpFile = T.tr("Localizable", "transfer__export_otp_file", fallback: "Export all Tokens to the OTPAuth file")
-    /// Save all Tokens as QR codes
-    internal static let exportOtpQr = T.tr("Localizable", "transfer__export_otp_qr", fallback: "Save all Tokens as QR codes")
+    /// Export Tokens to file
+    internal static let exportOtpFile = T.tr("Localizable", "transfer__export_otp_file", fallback: "Export Tokens to file")
+    /// Export Tokens as QR codes
+    internal static let exportOtpQr = T.tr("Localizable", "transfer__export_otp_qr", fallback: "Export Tokens as QR codes")
     /// Export to OTPAuth
     internal static let exportSectionTitle = T.tr("Localizable", "transfer__export_section_title", fallback: "Export to OTPAuth")
     /// General OTPAuth file
