@@ -243,7 +243,10 @@ extension CameraScannerFlowController: CameraScannerFlowControlling {
             defaultText: T.Backup.watchPairingDefaultName,
             inputConfiguration: .name,
             action: { [weak self] deviceName in
-                self?.viewController.presenter.handleAppleWatchPairing(deviceCodePath: deviceCodePath, deviceName: deviceName)
+                self?.viewController.presenter.handleAppleWatchPairing(
+                    deviceCodePath: deviceCodePath,
+                    deviceName: deviceName
+                )
             },
             cancel: {},
             verify: { deviceName in
@@ -256,7 +259,7 @@ extension CameraScannerFlowController: CameraScannerFlowControlling {
     
     func toCantPairWatch() {
         let alert = AlertController.makeSimple(
-            with:T.Commons.error,
+            with: T.Commons.error,
             message: T.Backup.watchPairingError,
             buttonTitle: T.Commons.ok
         )

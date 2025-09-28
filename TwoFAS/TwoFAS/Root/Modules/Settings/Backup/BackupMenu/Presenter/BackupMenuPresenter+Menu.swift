@@ -81,10 +81,10 @@ extension BackupMenuPresenter {
         )
         
         let cloudBackupChangePassword = BackupMenuSection(
-            title: T.Backup.encryptionMethodTitle,
+            title: T.Backup.encryptionChangeTitle,
             cells: [
                 .init(
-                    title: T.Backup.encryptionMethodAction,
+                    title: T.Backup.encryptionChangePassword,
                     action: .changeCloudBackupPassword
                 )
             ],
@@ -95,7 +95,7 @@ extension BackupMenuPresenter {
             title: T.Backup.managePairedWatchesTitle,
             cells: [
                 .init(
-                    title: T.Backup.managePairedWatchesAction,
+                    title: T.Backup.managePairedWatchesTitleShort,
                     action: .manageAppleWatch
                 )
             ],

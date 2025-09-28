@@ -160,7 +160,6 @@ extension MainModuleInteractor: MainModuleInteracting {
         cloudBackupStateInteractor.clearSaveSuccessSync()
     }
     
-    
     func checkForCompanionApp() {
         appInfoInteractor.update2FASPassMissingDate()
     }

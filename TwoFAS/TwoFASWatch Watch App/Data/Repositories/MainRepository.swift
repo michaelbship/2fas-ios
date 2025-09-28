@@ -162,7 +162,12 @@ final class MainRepositoryImpl: MainRepository {
             self?.storageError?(error)
         }
         
-        notificationCenter.addObserver(self, selector: #selector(cloudStateChange), name: .syncStateChanged, object: nil)
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(cloudStateChange),
+            name: .syncStateChanged,
+            object: nil
+        )
     }
     
     deinit {

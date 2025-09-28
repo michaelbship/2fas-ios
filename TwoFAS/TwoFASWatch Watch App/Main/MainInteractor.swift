@@ -36,7 +36,12 @@ final class MainInteractor {
     init(mainRepository: MainRepository) {
         self.mainRepository = mainRepository
         notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(syncStateChanged), name: .syncStateChanged, object: nil)
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(syncStateChanged),
+            name: .syncStateChanged,
+            object: nil
+        )
     }
     
     deinit {

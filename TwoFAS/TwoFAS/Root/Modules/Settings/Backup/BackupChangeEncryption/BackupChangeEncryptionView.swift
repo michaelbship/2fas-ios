@@ -64,7 +64,10 @@ struct BackupChangeEncryptionView: View {
                     } else {
                         VStack(spacing: Theme.Metrics.doubleMargin) {
                             if let migrationFailureReason = presenter.migrationFailureReason {
-                                Label(T.Backup.enterPasswordFailure(migrationFailureReason.description), systemImage: "xmark.circle.fill")
+                                Label(
+                                    T.Backup.enterPasswordFailure(migrationFailureReason.description),
+                                    systemImage: "xmark.circle.fill"
+                                )
                                     .font(.caption)
                                     .fontWeight(.bold)
                                     .foregroundStyle(Color(Theme.Colors.Text.theme))

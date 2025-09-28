@@ -71,7 +71,10 @@ struct EncryptedByUserPasswordSyncView: View {
                     } else {
                         VStack {
                             if let migrationFailureReason = presenter.migrationFailureReason {
-                                Label(T.Backup.enterPasswordFailure(migrationFailureReason.description), systemImage: "xmark.circle.fill")
+                                Label(
+                                    T.Backup.enterPasswordFailure(migrationFailureReason.description),
+                                    systemImage: "xmark.circle.fill"
+                                )
                                     .font(.caption)
                                     .fontWeight(.bold)
                                     .foregroundStyle(Color(Theme.Colors.Text.theme))

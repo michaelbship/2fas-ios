@@ -193,7 +193,10 @@ extension AddingServiceMainFlowController: AddingServiceMainFlowControlling {
             defaultText: T.Backup.watchPairingDefaultName,
             inputConfiguration: .name,
             action: { [weak self] deviceName in
-                self?.viewController.presenter.handleAppleWatchPairing(deviceCodePath: deviceCodePath, deviceName: deviceName)
+                self?.viewController.presenter.handleAppleWatchPairing(
+                    deviceCodePath: deviceCodePath,
+                    deviceName: deviceName
+                )
             },
             cancel: {},
             verify: { deviceName in

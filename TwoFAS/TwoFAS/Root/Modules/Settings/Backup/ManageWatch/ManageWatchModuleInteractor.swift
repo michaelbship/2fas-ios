@@ -38,7 +38,12 @@ final class ManageWatchModuleInteractor {
     init(manageWatch: WatchPairingInteracting) {
         self.manageWatch = manageWatch
         self.notificationCenter = .default
-        notificationCenter.addObserver(self, selector: #selector(syncStateDidChange), name: .syncStateChanged, object: nil)
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(syncStateDidChange),
+            name: .syncStateChanged,
+            object: nil
+        )
     }
     
     @objc

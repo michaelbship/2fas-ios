@@ -440,15 +440,4 @@ final class ModuleInteractorFactory {
     func manageWatchModuleInteractor() -> ManageWatchModuleInteracting {
         ManageWatchModuleInteractor(manageWatch: InteractorFactory.shared.watchPairingInteractor())
     }
-
-    func exportTokensModuleInteractor() -> ExportTokensModuleInteracting {
-        ExportTokensModuleInteractor(
-            serviceListingInteractor: InteractorFactory.shared.serviceListingInteractor(),
-            notificationsInteractor: InteractorFactory.shared.notificationInteractor(),
-            qrCodeGeneratorInteractor: InteractorFactory.shared.qrCodeGeneratorInteractor(),
-            serviceDefinitionInteractor: InteractorFactory.shared.serviceDefinitionInteractor(),
-            protectionInteractor: InteractorFactory.shared.protectionInteractor(),
-            compressionInteractor: InteractorFactory.shared.compressionInteractor()
-        )
-    }
 }
