@@ -67,15 +67,19 @@ extension LinkInteractor: LinkInteracting {
     
     func shouldHandleURL(url: URL) -> Bool {
         Log("LinkInteractor - shouldHandleURL", module: .interactor)
-        Log("URL: \(url)", module: .interactor, save: false)
         
-        guard mainRepository.shouldHandleURL(url) else {
+        let (canHandle, shouldSave) = mainRepository.handleURL(url)
+        Log("URL: \(url), canHandle: \(canHandle), shoudlSave: \(shouldSave)", module: .interactor, save: false)
+        
+        guard canHandle else {
             mainRepository.saveHasIncorrectCode()
             Log("LinkInteractor - shouldHandleURL - won't handle", module: .interactor)
             return false
         }
-        Log("LinkInteractor - shouldHandleURL - storing URL", module: .interactor)
-        mainRepository.storeURL(url)
+        if shouldSave {
+            Log("LinkInteractor - shouldHandleURL - storing URL", module: .interactor)
+            mainRepository.storeURL(url)
+        }
         return true
     }
     

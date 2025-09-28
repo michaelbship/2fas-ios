@@ -104,17 +104,24 @@ extension NewCodeInteractor: NewCodeInteracting {
 private extension NewCodeInteractor {
     private func addCodeAskForName(_ code: Code, force: Bool) -> Bool {
         Log("NewCodeInteractor - addCode", module: .interactor)
+        var currentCounter: Int?
         switch interactorModify.serviceExists(for: code.secret) {
         case .yes:
             Log("NewCodeInteractor - service already exists", module: .interactor)
             if force {
                 Log("NewCodeInteractor - force adding", module: .interactor)
+                if code.tokenType == .hotp {
+                    currentCounter = code.counter
+                }
                 interactorTrashed.deleteService(for: code.secret)
             } else {
                 return false
             }
         case .trashed:
             Log("NewCodeInteractor - service is in trash. Deleting", module: .interactor)
+            if code.tokenType == .hotp {
+                currentCounter = code.counter
+            }
             interactorTrashed.deleteService(for: code.secret)
         default:
             break
@@ -161,7 +168,7 @@ private extension NewCodeInteractor {
             labelColor: .random,
             labelTitle: codeName.twoLetters,
             algorithm: code.algorithm ?? .defaultValue,
-            counter: code.counter,
+            counter: currentCounter ?? code.counter,
             tokenType: code.tokenType,
             source: .link,
             sectionID: nil

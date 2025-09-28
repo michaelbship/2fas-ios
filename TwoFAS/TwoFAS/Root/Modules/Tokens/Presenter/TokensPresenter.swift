@@ -266,9 +266,28 @@ extension TokensPresenter {
     // MARK: - Menu
     
     var enableMenu: Bool { currentState == .normal }
-    
+    var canMoveItems: Bool { currentState == .normal && !isSearching && !interactor.isSortingEnabled }
+
     func handleMenuEnded() {
         view?.unlockBars()
+    }
+    
+    func canMoveServiceUp(_ serviceData: ServiceData) -> Bool {
+        interactor.canServiceMoveUp(serviceData: serviceData) && canMoveItems
+    }
+    
+    func canMoveServiceDown(_ serviceData: ServiceData) -> Bool {
+        interactor.canServiceMoveDown(serviceData: serviceData) && canMoveItems
+    }
+    
+    func handleMoveServiceUp(_ serviceData: ServiceData) {
+        interactor.moveServiceUp(serviceData: serviceData)
+        reloadData()
+    }
+    
+    func handleMoveServiceDown(_ serviceData: ServiceData) {
+        interactor.moveServiceDown(serviceData: serviceData)
+        reloadData()
     }
     
     // MARK: - Drag & Drop

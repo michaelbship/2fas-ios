@@ -41,18 +41,17 @@ final class SettingsMenuPresenter {
 
 extension SettingsMenuPresenter {
     var currentViewPath: ViewPath.Settings? {
-        guard let selectedModule else { return nil }
         switch selectedModule {
-        case .backup: return .backup
-        case .security: return .security
-        case .browserExtension: return .browserExtension
-        case .trash: return .trash
-        case .about: return .about
-        case .externalImport: return .externalImport
-        case .exportTokens: return .exportTokens
-        case .appearance: return .appearance
-        case .appleWatch: return .appleWatch
-        case .faq, .donate, .appStorePass, .openPass: return nil
+        case .backup: .backup
+        case .security: .security
+        case .browserExtension: .browserExtension
+        case .trash: .trash
+        case .about: .about
+        case .transfer: .transfer
+        case .appearance: .appearance
+        case .appleWatch: .appleWatch
+        case .faq, .donate, .appStorePass, .openPass: nil
+        default: nil
         }
     }
 
@@ -127,8 +126,8 @@ extension SettingsMenuPresenter {
         navigate(to: .security)
     }
     
-    func handleToExternalImport() {
-        navigate(to: .externalImport)
+    func handleSwitchToTransfer() {
+        navigate(to: .transfer)
     }
     
     func handleSwitchToAppearance() {
@@ -168,10 +167,10 @@ extension SettingsMenuPresenter {
         case .browserExtension: navigate(to: .browserExtension)
         case .trash: navigate(to: .trash)
         case .about: navigate(to: .about)
-        case .externalImport: navigate(to: .externalImport)
-        case .exportTokens: navigate(to: .exportTokens)
+        case .transfer: navigate(to: .transfer)
         case .appearance: navigate(to: .appearance)
         case .appleWatch: navigate(to: .appleWatch)
+        @unknown default: break
         }
     }
 }
@@ -210,8 +209,8 @@ private extension SettingsMenuPresenter {
             flowController.toAbout()
         case .donate:
             flowController.toDonate()
-        case .externalImport:
-            flowController.toExternalImport()
+        case .transfer:
+            flowController.toTransfer()
         case .appearance:
             flowController.toAppearance()
         case .appleWatch:
@@ -220,8 +219,6 @@ private extension SettingsMenuPresenter {
             flowController.toTwoPASSAppStore()
         case .openPass:
             flowController.toOpenTwoPASS()
-        case .exportTokens:
-            flowController.toExportTokens()
         }
     }
     
@@ -250,16 +247,16 @@ private extension SettingsMenuPresenter {
     
     func navigateToViewPath(navigateTo: SettingsNavigationModule) -> ViewPath.Settings? {
         switch navigateTo {
-        case .backup: return .backup
-        case .security: return .security
-        case .browserExtension: return .browserExtension
-        case .trash: return .trash
-        case .about: return .about
-        case .externalImport: return .externalImport
-        case .exportTokens: return .exportTokens
-        case .appearance: return .appearance
-        case .appleWatch: return .appleWatch
-        case .faq, .donate, .appStorePass, .openPass: return nil
+        case .backup: .backup
+        case .security: .security
+        case .browserExtension: .browserExtension
+        case .trash: .trash
+        case .about: .about
+        case .transfer: .transfer
+        case .appearance: .appearance
+        case .appleWatch: .appleWatch
+        case .faq, .donate, .appStorePass, .openPass: nil
+        @unknown default: nil
         }
     }
 }

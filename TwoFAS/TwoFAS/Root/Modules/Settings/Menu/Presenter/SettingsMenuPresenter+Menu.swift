@@ -105,16 +105,10 @@ extension SettingsMenuPresenter {
             title: T.Settings.manageTokens,
             cells: [
                 .init(
-                    icon: Asset.settingsExternalImport.image,
-                    title: T.Settings.externalImport,
+                    icon: UIImage(systemName: "firewall.fill")!,
+                    title: T.Settings.transfer,
                     accessory: .arrow,
-                    action: .navigation(navigatesTo: .externalImport)
-                ),
-                .init(
-                    icon: Asset.settingsExport.image,
-                    title: T.Settings.exportTitleTokens,
-                    accessory: .arrow,
-                    action: .navigation(navigatesTo: .exportTokens)
+                    action: .navigation(navigatesTo: .transfer)
                 ),
                 .init(
                     icon: Asset.settingsTrash.image,

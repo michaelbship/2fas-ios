@@ -91,6 +91,9 @@ final class MainRepositoryImpl: MainRepository {
     
     var _isLockScreenActive = false
     var _areLocalNotificationsHandled = false
+    var _urlWillBeHandled = false
+    
+    var _appState: AppState = .unknown
     
     // Cached values for higher pefrormance
     var cachedSortType: SortType?

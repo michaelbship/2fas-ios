@@ -30,7 +30,7 @@ protocol SettingsMenuFlowControllerChild: AnyObject {
     func toSwitchToBrowserExtension()
     func toSwitchToFAQ()
     func appSecurityChaged()
-    func toSwitchToExternlImport()
+    func toSwitchToTransfer()
     func toSwitchToAppearance()
     func toSwitchToBackup()
 }
@@ -45,8 +45,7 @@ protocol SettingsMenuFlowControllerParent: AnyObject {
     func toBrowserExtension()
     func toDonate()
     func toUpdateCurrentPosition(_ viewPath: ViewPath.Settings?)
-    func toExternalImport()
-    func toExportTokens()
+    func toTransfer()
     func toAppearance()
     func toAppleWatch()
 }
@@ -62,8 +61,7 @@ protocol SettingsMenuFlowControlling: AnyObject {
     func toAbout()
     func toDonate()
     func toUpdateCurrentPosition(_ viewPath: ViewPath.Settings?)
-    func toExternalImport()
-    func toExportTokens()
+    func toTransfer()
     func toAppearance()
     func toAppleWatch()
     func toTwoPASSAppStore()
@@ -115,8 +113,7 @@ extension SettingsMenuFlowController: SettingsMenuFlowControlling {
     }
     func toBrowserExtension() { parent?.toBrowserExtension() }
     func toUpdateCurrentPosition(_ viewPath: ViewPath.Settings?) { parent?.toUpdateCurrentPosition(viewPath) }
-    func toExternalImport() { parent?.toExternalImport() }
-    func toExportTokens() { parent?.toExportTokens() }
+    func toTransfer() { parent?.toTransfer() }
     func toAppearance() { parent?.toAppearance() }
     func toAppleWatch() { parent?.toAppleWatch() }
     func toTwoPASSAppStore() {
@@ -160,9 +157,10 @@ extension SettingsMenuFlowController: SettingsMenuFlowControllerChild {
         viewController.presenter.handleSwitchToBrowserExtension()
     }
     
-    func toSwitchToExternlImport() {
-        viewController.presenter.handleToExternalImport()
+    func toSwitchToTransfer() {
+        viewController.presenter.handleSwitchToTransfer()
     }
+    
     func toSwitchToAppearance() {
         viewController.presenter.handleSwitchToAppearance()
     }

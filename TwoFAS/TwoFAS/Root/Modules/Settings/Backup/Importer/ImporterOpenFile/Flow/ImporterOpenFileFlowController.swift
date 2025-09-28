@@ -40,7 +40,6 @@ protocol ImporterOpenFileHeadlessFlowControlling: AnyObject {
     func toFileError(error: ImporterOpenFileError)
     func toFileIsEmpty()
     func toEnterPassword(for data: ExchangeDataFormat, externalImportService: ExternalImportService)
-    func toEmptyClipboard()
 }
 
 final class ImporterOpenFileHeadlessFlowController: FlowController {
@@ -146,19 +145,6 @@ extension ImporterOpenFileHeadlessFlowController: ImporterOpenFileHeadlessFlowCo
                 parent: self,
                 data: data,
                 externalImportService: externalImportService,
-                animated: animated
-            )
-        }
-    }
-    
-    func toEmptyClipboard() {
-        showNavigationController { [weak self, weak navigationController] animated in
-            guard let self, let navigationController else { return }
-            
-            ImporterFileErrorFlowController.push(
-                in: navigationController,
-                parent: self,
-                fileError: .emptyClipboard,
                 animated: animated
             )
         }
