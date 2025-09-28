@@ -55,13 +55,16 @@ final class LoginModuleInteractor {
     
     private let loginInteractor: LoginInteracting
     private let appLockStateInteractor: AppLockStateInteracting
+    private let appStateInteractor: AppStateInteracting
 
     init(
         loginInteractor: LoginInteracting,
-        appLockStateInteractor: AppLockStateInteracting
+        appLockStateInteractor: AppLockStateInteracting,
+        appStateInteractor: AppStateInteracting
     ) {
         self.loginInteractor = loginInteractor
         self.appLockStateInteractor = appLockStateInteractor
+        self.appStateInteractor = appStateInteractor
                 
         timer.timerFinished = { [weak self] in
             DispatchQueue.main.async {
@@ -81,7 +84,14 @@ final class LoginModuleInteractor {
     
     func checkBio() {
         guard !loginInteractor.isLocked && UIApplication.shared.applicationState != .background else { return }
-        loginInteractor.authenticateUsingBioAuthIfPossible(reason: T.Security.confirmYouAreDeviceOwner)
+        if appStateInteractor.willURLBeHandled {
+            appStateInteractor.clearURLWillBeHandled()
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                self.useBiometry()
+            }
+        } else {
+            useBiometry()
+        }
     }
 }
 
@@ -119,6 +129,10 @@ extension LoginModuleInteractor: LoginModuleInteracting {
 }
 
 private extension LoginModuleInteractor {
+    func useBiometry() {
+        loginInteractor.authenticateUsingBioAuthIfPossible(reason: T.Security.confirmYouAreDeviceOwner)
+    }
+    
     func clear() {
         numbers = []
     }

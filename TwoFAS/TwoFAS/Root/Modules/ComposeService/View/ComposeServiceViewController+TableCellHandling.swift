@@ -66,7 +66,9 @@ extension ComposeServiceViewController {
             cell.didUpdateValue = { [weak self] kind, value in
                 self?.presenter.handleValueUpdate(for: kind, value: value)
             }
-            cell.revealButtonAction = { [weak self] in self?.presenter.handleReveal() }
+            cell.revealButtonAction = { [weak self] shareButton in
+                self?.presenter.handleReveal(shareButton: shareButton)
+            }
             return cell
         case .navigate(let config):
             guard let cell = tableView.dequeueReusableCell(
@@ -96,7 +98,7 @@ extension ComposeServiceViewController {
                 for: indexPath
             ) as? SettingsMenuTableViewCell else { return UITableViewCell() }
             if config.kind == .delete {
-                cell.update(icon: nil, title: T.Tokens.removeServiceFromApp, kind: .none, decorateText: .action)
+                cell.update(icon: nil, title: T.Tokens.moveToTrash, kind: .none, decorateText: .action)
             }
             return cell
         case .icon(let config):

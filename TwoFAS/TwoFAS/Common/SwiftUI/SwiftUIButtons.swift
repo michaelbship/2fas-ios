@@ -49,6 +49,25 @@ struct RoundedFilledConstantWidthButtonStyle: ButtonStyle {
     }
 }
 
+struct RoundedFilledConstantWidthStateButtonStyle: ButtonStyle {
+    let isDisabled: Bool
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .contentShape(Rectangle())
+            .multilineTextAlignment(.center)
+            .font(.body.bold())
+            .padding()
+            .foregroundColor(.white)
+            .frame(width: Theme.Metrics.componentWidth, alignment: .center)
+            .background(
+                Color(isDisabled ? Theme.Colors.Controls.inactive :
+                        (configuration.isPressed ? Theme.Colors.Controls.highlighed : Theme.Colors.Controls.active))
+            )
+            .cornerRadius(Theme.Metrics.cornerRadius)
+    }
+}
+
 struct RoundedBorderButtonStyle: SwiftUI.ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -105,6 +124,8 @@ struct LinkButtonStyle: SwiftUI.ButtonStyle {
 struct TextLinkButtonStyle: SwiftUI.ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
+            .frame(width: Theme.Metrics.componentWidth, alignment: .center)
+            .contentShape(Rectangle())
             .multilineTextAlignment(.center)
             .font(.body)
             .padding()

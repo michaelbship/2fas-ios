@@ -75,8 +75,7 @@ final class PINPadCodeDots: UIView {
     }
     
     func fillDots(count: Int, animated: Bool) {
-        guard let dotCount else { return }
-        assert(count <= dotCount)
+        guard let dotCount, count <= dotCount else { return }
         
         for i in 0 ..< dotCount {
             let dot = dots[i]

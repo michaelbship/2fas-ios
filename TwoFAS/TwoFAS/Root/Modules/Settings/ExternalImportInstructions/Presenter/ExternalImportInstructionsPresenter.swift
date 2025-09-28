@@ -33,7 +33,7 @@ final class ExternalImportInstructionsPresenter {
 extension ExternalImportInstructionsPresenter {
     var hasSecondaryAction: Bool {
         switch service {
-        case .aegis, .raivo, .andOTP, .twofas, .authenticatorPro, .otpAuthFile, .clipboard: false
+        case .aegis, .raivo, .andOTP, .twofas, .authenticatorPro, .otpAuthFile: false
         case .googleAuth, .lastPass: true
         }
     }
@@ -48,16 +48,8 @@ extension ExternalImportInstructionsPresenter {
         case .authenticatorPro: AnyView(Asset.externalImportAuthenticatorPro.swiftUIImage)
         case .twofas: AnyView(Asset.externalImportGoogleAuth.swiftUIImage) // Not used here
         case .otpAuthFile:
-                AnyView(
-                    Image(systemName: "doc.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundStyle(Color(ThemeColor.theme))
-                        .frame(width: 60, height: 60)
-                )
-        case .clipboard:
             AnyView(
-                Image(systemName: "list.clipboard.fill")
+                Image(systemName: "doc.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(Color(ThemeColor.theme))
@@ -75,7 +67,6 @@ extension ExternalImportInstructionsPresenter {
         case .andOTP: T.Externalimport.infoAndotpTitle
         case .authenticatorPro: T.Externalimport.infoAuthenticatorproTitle
         case .otpAuthFile: T.Settings.importFromTextFile
-        case .clipboard: T.Settings.importFromClipboard
         case .twofas: T.Commons._2fasToolbar // Not used here
         }
     }
@@ -89,7 +80,6 @@ extension ExternalImportInstructionsPresenter {
         case .andOTP: T.Externalimport.andotpMsg
         case .authenticatorPro: T.Externalimport.authenticatorproMsg
         case .otpAuthFile: T.Settings.importFromTextFileDescription
-        case .clipboard: T.Settings.importFromClipboardDescription
         case .twofas: ""  // Not used here
         }
     }
@@ -100,13 +90,12 @@ extension ExternalImportInstructionsPresenter {
         case .authenticatorPro, .otpAuthFile: T.Externalimport.chooseTxtCta
         case .googleAuth: T.Commons.scanQrCode
         case .twofas: "" // Not used here
-        case .clipboard: T.Settings.importReadFromClipboard
         }
     }
     
     var secondaryActionName: String? {
         switch service {
-        case .aegis, .raivo, .twofas, .andOTP, .authenticatorPro, .otpAuthFile, .clipboard: nil
+        case .aegis, .raivo, .twofas, .andOTP, .authenticatorPro, .otpAuthFile: nil
         case .lastPass: T.Commons.scanQrCode
         case .googleAuth: T.Introduction.chooseQrCode
         }
@@ -119,7 +108,6 @@ extension ExternalImportInstructionsPresenter {
         case .aegis, .raivo, .lastPass, .twofas, .andOTP, .authenticatorPro, .otpAuthFile:
             flowController.toOpenFile(service: service)
         case .googleAuth: flowController.toCamera()
-        case .clipboard: flowController.toFromClipboard()
         }
     }
     
@@ -129,7 +117,7 @@ extension ExternalImportInstructionsPresenter {
     
     func handleSecondaryAction() {
         switch service {
-        case .aegis, .raivo, .twofas, .andOTP, .authenticatorPro, .otpAuthFile, .clipboard: break
+        case .aegis, .raivo, .twofas, .andOTP, .authenticatorPro, .otpAuthFile: break
         case .lastPass: flowController.toCamera()
         case .googleAuth: flowController.toGallery()
         }

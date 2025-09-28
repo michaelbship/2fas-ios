@@ -79,12 +79,11 @@ enum SettingsNavigationModule: Hashable {
     case faq
     case about
     case donate
-    case externalImport
+    case transfer
     case appearance
     case appleWatch
     case openPass
     case appStorePass
-    case exportTokens
 }
 
 enum SettingsNavigationToggle: Hashable {

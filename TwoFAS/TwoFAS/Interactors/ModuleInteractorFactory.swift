@@ -397,7 +397,8 @@ final class ModuleInteractorFactory {
     func loginModuleInteractor() -> LoginModuleInteracting {
         LoginModuleInteractor(
             loginInteractor: InteractorFactory.shared.loginInteractor(),
-            appLockStateInteractor: InteractorFactory.shared.appLockStateInteractor()
+            appLockStateInteractor: InteractorFactory.shared.appLockStateInteractor(),
+            appStateInteractor: InteractorFactory.shared.appStateInteractor()
         )
     }
     
@@ -405,14 +406,20 @@ final class ModuleInteractorFactory {
         IntroductionModuleInteractor(rootInteractor: InteractorFactory.shared.rootInteractor())
     }
     
-    func exportTokensModuleInteractor() -> ExportTokensModuleInteracting {
-        ExportTokensModuleInteractor(
+    func transferModuleInteractor() -> TransferModuleInteracting {
+        TransferModuleInteractor(
             serviceListingInteractor: InteractorFactory.shared.serviceListingInteractor(),
             notificationsInteractor: InteractorFactory.shared.notificationInteractor(),
             qrCodeGeneratorInteractor: InteractorFactory.shared.qrCodeGeneratorInteractor(),
             serviceDefinitionInteractor: InteractorFactory.shared.serviceDefinitionInteractor(),
             protectionInteractor: InteractorFactory.shared.protectionInteractor(),
             compressionInteractor: InteractorFactory.shared.compressionInteractor()
+        )
+    }
+    
+    func exportQuestionPINVerificationModuleInteractor() -> ExportQuestionPINVerificationModuleInteracting {
+        ExportQuestionPINVerificationModuleInteractor(
+            protectionInteractor: InteractorFactory.shared.protectionInteractor()
         )
     }
 }

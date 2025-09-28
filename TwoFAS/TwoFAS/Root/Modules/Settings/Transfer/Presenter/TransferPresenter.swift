@@ -17,31 +17,24 @@
 //  along with this program. If not, see <https://www.gnu.org/licenses/>
 //
 
-import UIKit
+import Foundation
 
-final class ExportTokensPresenter {
-    weak var view: ExportTokensViewControlling?
+final class TransferPresenter {
+    weak var view: TransferViewControlling?
     
-    private let flowController: ExportTokensFlowControlling
-    private let interactor: ExportTokensModuleInteracting
+    private let flowController: TransferFlowControlling
+    let interactor: TransferModuleInteracting
     
-    init(flowController: ExportTokensFlowControlling, interactor: ExportTokensModuleInteracting) {
+    init(flowController: TransferFlowControlling, interactor: TransferModuleInteracting) {
         self.flowController = flowController
         self.interactor = interactor
     }
-    
+
     func viewWillAppear() {
         reload()
-        if !interactor.hasServices {
-            view?.lock()
-        }
     }
     
     func handleSelection(at indexPath: IndexPath) {
-        guard interactor.hasPIN else {
-            flowController.toSetupPIN()
-            return
-        }
         let menu = buildMenu()
         guard
             let section = menu[safe: indexPath.section],
@@ -49,23 +42,37 @@ final class ExportTokensPresenter {
         else { return }
         
         switch cell.action {
-        case .copyToClipboard:
-            flowController.toCopyToClipboard()
-        case .saveOTPAuthFile:
+        case .aegis:
+            flowController.toAegis()
+        case .raivo:
+            flowController.toRaivo()
+        case .lastPass:
+            flowController.toLastPass()
+        case .googleAuth:
+            flowController.toGoogleAuth()
+        case .andOTP:
+            flowController.toAndOTP()
+        case .authenticatorPro:
+            flowController.toAuthenticatorPro()
+        case .otpAuthFileImport:
+            flowController.toOpenTXTFile()
+        case .otpAuthFileExport:
+            guard interactor.hasPIN else {
+                flowController.toSetupPIN()
+                return
+            }
             flowController.toSaveOTPAuthFile()
         case .exportQRCodes:
+            guard interactor.hasPIN else {
+                flowController.toSetupPIN()
+                return
+            }
             flowController.toExportQRCodes()
         }
     }
     
     func handleBecomeActive() {
         reload()
-    }
-}
-
-extension ExportTokensPresenter {
-    func handleCopyToClipboard() {
-        interactor.copyToClipboardGeneratedCodes(message: T.Commons.success)
     }
     
     func handleSaveOTPAuthFile() {
@@ -98,7 +105,7 @@ extension ExportTokensPresenter {
     }
 }
 
-private extension ExportTokensPresenter {
+private extension TransferPresenter {
     func reload() {
         let menu = buildMenu()
         view?.reload(with: menu)

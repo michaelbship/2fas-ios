@@ -114,6 +114,19 @@ protocol MainRepository: AnyObject {
     func initialPermissionStateInitialize()
     
     var is2FASPASSInstalled: Bool { get }
+    var dateOfNoCompanionApp: Date? { get }
+    func saveDateOfNoCompanionApp(_ date: Date)
+    func clearDateOfNoCompanionApp()
+    
+    var notificationGroupID: String? { get }
+    func createNotificationGroupID()
+    
+    var appState: AppState { get }
+    func saveAppState(_ appState: AppState)
+    
+    var willURLBeHandled: Bool { get }
+    func clearURLWillBeHandled()
+    func markURLWillBeHandled()
     
     // MARK: - Services
     var hasServices: Bool { get }
@@ -249,7 +262,7 @@ protocol MainRepository: AnyObject {
     
     // MARK: - Code
     var storedURL: URL? { get }
-    func shouldHandleURL(_ code: URL) -> Bool
+    func handleURL(_ url: URL) -> (canHandle: Bool, shouldSave: Bool)
     func storeURL(_ code: URL)
     func hasStoredURL() -> Bool
     func clearStoredURL()
@@ -358,6 +371,9 @@ protocol MainRepository: AnyObject {
     )
     func listAllNews(
         publishedAfter: String,
+        lang: String,
+        group: String,
+        noCompanionAppFrom: String?,
         completion: @escaping (Result<[ListNews.NewsEntry], NetworkError>) -> Void
     )
     func uploadLogs(

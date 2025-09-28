@@ -23,5 +23,4 @@ enum ImporterOpenFileError {
     case cantReadFile(reason: String?)
     case newerSchema
     case noNewServices
-    case emptyClipboard
 }

@@ -106,8 +106,16 @@ extension SettingsFlowController: SettingsFlowControlling {
         } else {
             var vcs = viewController.navigationNavi.viewControllers
             vcs += viewController.contentNavi.viewControllers
-            viewController.navigationNavi.setViewControllers(vcs, animated: false)
             viewController.contentNavi.setViewControllers([], animated: false)
+
+            if let last = viewController.contentNavi.viewControllers.last,
+               let presented = last.presentedViewController { // dismissing any modals on top
+                presented.dismiss(animated: false) { [weak self] in
+                    self?.viewController.navigationNavi.setViewControllers(vcs, animated: false)
+                }
+            } else {
+                viewController.navigationNavi.setViewControllers(vcs, animated: false)
+            }
         }
     }
     
@@ -191,19 +199,11 @@ extension SettingsFlowController: SettingsMenuFlowControllerParent {
         }
     }
     
-    func toExternalImport() {
+    func toTransfer() {
         if isCollapsed {
-            ExternalImportFlowController.push(in: viewController.navigationNavi, parent: self)
+            TransferFlowController.push(in: viewController.navigationNavi, parent: self)
         } else {
-            ExternalImportFlowController.showAsRoot(in: viewController.contentNavi, parent: self)
-        }
-    }
-    
-    func toExportTokens() {
-        if isCollapsed {
-            ExportTokensFlowController.push(in: viewController.navigationNavi, parent: self)
-        } else {
-            ExportTokensFlowController.showAsRoot(in: viewController.contentNavi, parent: self)
+            TransferFlowController.showAsRoot(in: viewController.contentNavi, parent: self)
         }
     }
     
@@ -259,6 +259,5 @@ extension SettingsFlowController: AppleWatchFlowControllerParent {
 extension SettingsFlowController: TrashFlowControllerParent {}
 extension SettingsFlowController: BrowserExtensionMainFlowControllerParent {}
 extension SettingsFlowController: AboutFlowControllerParent {}
-extension SettingsFlowController: ExternalImportFlowControllerParent {}
-extension SettingsFlowController: ExportTokensFlowControllerParent {}
+extension SettingsFlowController: TransferFlowControllerParent {}
 extension SettingsFlowController: AppearanceFlowControllerParent {}

@@ -24,13 +24,22 @@ public protocol AppStateInteracting: AnyObject {
     
     func lockScreenActive()
     func lockScreenInactive()
+    
+    var appState: AppState { get }
+    func saveAppState(_ appState: AppState)
+    
+    var willURLBeHandled: Bool { get }
+    func clearURLWillBeHandled()
+    func markURLWillBeHandled()
 }
 
 final class AppStateInteractor {
     private let mainRepository: MainRepository
+    private let notificationCenter: NotificationCenter
     
     init(mainRepository: MainRepository) {
         self.mainRepository = mainRepository
+        self.notificationCenter = .default
     }
 }
 
@@ -45,5 +54,24 @@ extension AppStateInteractor: AppStateInteracting {
     
     func lockScreenInactive() {
         mainRepository.lockScreenInactive()
+    }
+    
+    var appState: AppState {
+        mainRepository.appState
+    }
+    
+    func saveAppState(_ appState: AppState) {
+        mainRepository.saveAppState(appState)
+        notificationCenter.post(name: .appStateDidChange, object: nil, userInfo: nil)
+    }
+    
+    var willURLBeHandled: Bool { mainRepository.willURLBeHandled }
+    
+    func clearURLWillBeHandled() {
+        mainRepository.clearURLWillBeHandled()
+    }
+    
+    func markURLWillBeHandled() {
+        mainRepository.markURLWillBeHandled()
     }
 }

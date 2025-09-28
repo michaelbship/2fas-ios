@@ -21,6 +21,7 @@ import Foundation
 
 public extension Notification.Name {
     static let switchToSetupPIN = Notification.Name("switchToSetupPIN")
+    static let switchToTokens = Notification.Name("switchToTokens")
     static let switchToBrowserExtension = Notification.Name("switchToBrowserExtension")
     static let orientationSizeWillChange = Notification.Name("orientationSizeWillChange")
     static let tokensScreenIsVisible = Notification.Name("tokensScreenIsVisible")
@@ -28,4 +29,5 @@ public extension Notification.Name {
     static let lockScreenIsInactive = Notification.Name("lockScreenIsInactive")
     static let lockScreenIsActive = Notification.Name("lockScreenIsActive")
     static let userLoggedIn = Notification.Name("userLoggedIn")
+    static let appStateDidChange = Notification.Name("appStateDidChange")
 }

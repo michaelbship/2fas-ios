@@ -21,9 +21,10 @@ import UIKit
 import Common
 import Data
 
-protocol ExternalImportFlowControllerParent: AnyObject {}
+protocol TransferFlowControllerParent: AnyObject {}
 
-protocol ExternalImportFlowControlling: AnyObject {
+protocol TransferFlowControlling: AnyObject {
+    // MARK: - Import
     func toAegis()
     func toRaivo()
     func toLastPass()
@@ -31,25 +32,33 @@ protocol ExternalImportFlowControlling: AnyObject {
     func toAndOTP()
     func toAuthenticatorPro()
     func toOpenTXTFile()
-    func toReadFromClipboard()
+    // MARK: - Export
+    func toSaveOTPAuthFile()
+    func toExportQRCodes()
+    func toSetupPIN()
+    func toShareOTPAuthFileContents(_ url: URL, completion: @escaping () -> Void)
+    func toShareQRCodes(_ url: URL, completion: @escaping () -> Void)
+    func toError(_ message: String)
 }
 
-final class ExternalImportFlowController: FlowController {
-    private weak var parent: ExternalImportFlowControllerParent?
+final class TransferFlowController: FlowController {
+    private weak var parent: TransferFlowControllerParent?
     private weak var navigationController: UINavigationController?
     private var galleryViewController: UIViewController?
     private var importer: ImporterOpenFileHeadlessFlowController?
-    
+
     static func showAsRoot(
         in navigationController: UINavigationController,
-        parent: ExternalImportFlowControllerParent
+        parent: TransferFlowControllerParent
     ) {
-        let view = ExternalImportViewController()
-        let flowController = ExternalImportFlowController(viewController: view)
+        let view = TransferViewController()
+        let flowController = TransferFlowController(viewController: view)
+        let interactor = ModuleInteractorFactory.shared.transferModuleInteractor()
         flowController.parent = parent
         flowController.navigationController = navigationController
-        let presenter = ExternalImportPresenter(
-            flowController: flowController
+        let presenter = TransferPresenter(
+            flowController: flowController,
+            interactor: interactor
         )
         presenter.view = view
         view.presenter = presenter
@@ -59,14 +68,16 @@ final class ExternalImportFlowController: FlowController {
     
     static func push(
         in navigationController: UINavigationController,
-        parent: ExternalImportFlowControllerParent
+        parent: TransferFlowControllerParent
     ) {
-        let view = ExternalImportViewController()
-        let flowController = ExternalImportFlowController(viewController: view)
+        let view = TransferViewController()
+        let flowController = TransferFlowController(viewController: view)
+        let interactor = ModuleInteractorFactory.shared.transferModuleInteractor()
         flowController.parent = parent
         flowController.navigationController = navigationController
-        let presenter = ExternalImportPresenter(
-            flowController: flowController
+        let presenter = TransferPresenter(
+            flowController: flowController,
+            interactor: interactor
         )
         presenter.view = view
         view.presenter = presenter
@@ -75,7 +86,8 @@ final class ExternalImportFlowController: FlowController {
     }
 }
 
-extension ExternalImportFlowController: ExternalImportFlowControlling {
+extension TransferFlowController: TransferFlowControlling {
+    // MARK: - Import
     func toAegis() {
         guard let navigationController else { return }
         navigationController.setNavigationBarHidden(true, animated: true)
@@ -146,22 +158,64 @@ extension ExternalImportFlowController: ExternalImportFlowControlling {
         )
     }
     
-    func toReadFromClipboard() {
-        guard let navigationController else { return }
-        navigationController.setNavigationBarHidden(true, animated: true)
-        ExternalImportInstructionsFlowController.push(
-            in: navigationController,
-            parent: self,
-            service: .clipboard
+    // MARK: - Export
+    func toSaveOTPAuthFile() {
+        ExportQuestionFlowController.present(on: viewController, parent: self, exportType: .file)
+    }
+    
+    func toExportQRCodes() {
+        ExportQuestionFlowController.present(on: viewController, parent: self, exportType: .qr)
+    }
+    
+    func toSetupPIN() {
+        let alert = UIAlertController(
+            title: T.Commons.notice,
+            message: T.Settings.exportPinNeeded,
+            preferredStyle: .alert
         )
+        let setPIN = UIAlertAction(title: T.Commons.set, style: .destructive) { _ in
+            NotificationCenter.default.post(name: .switchToSetupPIN, object: nil)
+        }
+        
+        let cancel = UIAlertAction(title: T.Commons.cancel, style: .cancel)
+        alert.addAction(setPIN)
+        alert.addAction(cancel)
+        viewController.present(alert, animated: true, completion: nil)
+    }
+    
+    func toShareOTPAuthFileContents(_ url: URL, completion: @escaping () -> Void) {
+        let activityVC = activityVC(
+            for: url,
+            title: T.Settings.exportTitleTokens,
+            completion: completion
+        )
+        viewController.present(activityVC, animated: true, completion: nil)
+    }
+    
+    func toShareQRCodes(_ url: URL, completion: @escaping () -> Void) {
+        let activityVC = activityVC(
+            for: url,
+            title: T.Settings.exportTitleQrCodes,
+            completion: completion
+        )
+        viewController.present(activityVC, animated: true, completion: nil)
+    }
+    
+    func toError(_ message: String) {
+        let alert = UIAlertController.makeSimple(with: T.Commons.error, message: message)
+        viewController.present(alert, animated: true, completion: nil)
     }
 }
 
-extension ExternalImportFlowController: ExternalImportInstructionsFlowControllerParent {
+extension TransferFlowController {
+    var viewController: TransferViewController {
+        _viewController as! TransferViewController
+    }
+}
+
+extension TransferFlowController: ExternalImportInstructionsFlowControllerParent {
     func instructionsClose() {
-        navigationController?.popViewController(animated: true)
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        navigationController?.tabBarController?.tabBar.isHidden = false
+        close()
     }
     
     func instructionsOpenFile(service: ExternalImportService) {
@@ -200,7 +254,7 @@ extension ExternalImportFlowController: ExternalImportInstructionsFlowController
     }
 }
 
-extension ExternalImportFlowController: CameraScannerFlowControllerParent {
+extension TransferFlowController: CameraScannerFlowControllerParent {
     func cameraScannerDidFinish() { end() }
     func cameraScannerDidImport(count: Int) {
         navigationController?.dismiss(animated: true) { [weak self] in
@@ -210,7 +264,7 @@ extension ExternalImportFlowController: CameraScannerFlowControllerParent {
     func cameraScannerServiceWasCreated(serviceData: ServiceData) { end() }
 }
 
-extension ExternalImportFlowController: SelectFromGalleryFlowControllerParent {
+extension TransferFlowController: SelectFromGalleryFlowControllerParent {
     func galleryDidFinish() { endGallery() }
     func galleryDidCancel() { endGallery() }
     func galleryServiceWasCreated(serviceData: ServiceData) { endGallery() }
@@ -223,7 +277,7 @@ extension ExternalImportFlowController: SelectFromGalleryFlowControllerParent {
     }
 }
 
-extension ExternalImportFlowController: ImporterOpenFileHeadlessFlowControllerParent {
+extension TransferFlowController: ImporterOpenFileHeadlessFlowControllerParent {
     func importerCloseOnSucessfulImport() {
         navigationController?.setNavigationBarHidden(false, animated: false)
         navigationController?.tabBarController?.tabBar.isHidden = false
@@ -239,7 +293,13 @@ extension ExternalImportFlowController: ImporterOpenFileHeadlessFlowControllerPa
     }
 }
 
-private extension ExternalImportFlowController {
+private extension TransferFlowController {
+    func close(animated: Bool = true) {
+        navigationController?.popViewController(animated: animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+        navigationController?.tabBarController?.tabBar.isHidden = false
+    }
+    
     func endGallery() {
         navigationController?.dismiss(animated: true) { [weak self] in
             self?.galleryViewController = nil
@@ -256,7 +316,58 @@ private extension ExternalImportFlowController {
             message: T.Backup.servicesImportedCount(count),
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: T.Commons.ok, style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: T.Commons.tokens, style: .default, handler: { [weak self] _ in
+            NotificationCenter.default.post(name: .switchToTokens, object: nil)
+            self?.close(animated: false)
+        }))
+        alert.addAction(UIAlertAction(title: T.Commons.close, style: .cancel, handler: { [weak self] _ in
+            self?.instructionsClose()
+        }))
         navigationController?.present(alert, animated: true)
+    }
+
+    func activityVC(for url: URL, title: String, completion: @escaping () -> Void) -> UIActivityViewController {
+        let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        activityVC.title = title
+        activityVC.excludedActivityTypes = [
+            .addToReadingList,
+            .assignToContact,
+            .markupAsPDF,
+            .openInIBooks,
+            .postToFacebook,
+            .postToVimeo,
+            .postToFlickr,
+            .postToTencentWeibo,
+            .postToTwitter,
+            .postToWeibo
+        ]
+        
+        if let popover = activityVC.popoverPresentationController, let view = UIApplication.keyWindow {
+            let bounds = view.bounds
+            popover.permittedArrowDirections = .init(rawValue: 0)
+            popover.sourceRect = CGRect(x: bounds.midX, y: bounds.midY, width: 1, height: 2)
+            popover.sourceView = view
+        }
+        
+        activityVC.completionWithItemsHandler = { _, _, _, _ in
+            completion()
+        }
+        
+        return activityVC
+    }
+}
+
+extension TransferFlowController: ExportQuestionFlowControllerParent {
+    func closeExporter(export: Bool, exportType: ExportQuestionType) {
+        viewController.dismiss(animated: true)
+        guard export else {
+            return
+        }
+        switch exportType {
+        case .file:
+            viewController.presenter.handleSaveOTPAuthFile()
+        case .qr:
+            viewController.presenter.handleExportQRCodes()
+        }
     }
 }

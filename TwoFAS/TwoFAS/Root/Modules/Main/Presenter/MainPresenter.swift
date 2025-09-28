@@ -48,13 +48,17 @@ final class MainPresenter {
     func handleSwitchToSetupPIN() {
         view?.navigateToViewPath(.settings(option: .security))
     }
+    
+    func handleSwitchToTokens() {
+        view?.navigateToViewPath(.main)
+    }
 
     func handleSwitchToBrowserExtension() {
         view?.navigateToViewPath(.settings(option: .browserExtension))
     }
     
     func handleSwitchToExternalImport() {
-        view?.navigateToViewPath(.settings(option: .externalImport))
+        view?.navigateToViewPath(.settings(option: .transfer))
     }
     
     func handleSwitchToBackup() {
@@ -106,7 +110,9 @@ private extension MainPresenter {
     func viewIsVisible() {
         guard !interactor.isAppLocked && !handlingViewIsVisible else { return }
         handlingViewIsVisible = true
+        interactor.setNotificationGroupID()
         interactor.applyMDMRules()
+        interactor.checkForCompanionApp()
         if interactor.shouldSetPasscode {
             flowController.toSetPIN()
         } else if let url = interactor.checkForImport() {

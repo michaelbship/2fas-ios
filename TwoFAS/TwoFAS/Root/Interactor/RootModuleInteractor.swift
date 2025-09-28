@@ -29,6 +29,7 @@ protocol RootModuleInteracting: AnyObject {
     func initializeApp()
     func applicationWillResignActive()
     func applicationWillEnterForeground()
+    func applicationDidEnterBackground()
     func applicationDidBecomeActive(didCopyToken: @escaping Callback)
     func applicationWillTerminate()
     
@@ -105,11 +106,17 @@ extension RootModuleInteractor: RootModuleInteracting {
     }
     
     func applicationWillResignActive() {
+        appStateInteractor.saveAppState(.resiging)
         rootInteractor.applicationWillResignActive()
     }
     
     func applicationWillEnterForeground() {
+        appStateInteractor.saveAppState(.foreground)
         rootInteractor.applicationWillEnterForeground()
+    }
+    
+    func applicationDidEnterBackground() {
+        appStateInteractor.saveAppState(.background)
     }
     
     func applicationWillTerminate() {
@@ -117,6 +124,7 @@ extension RootModuleInteractor: RootModuleInteracting {
     }
     
     func applicationDidBecomeActive(didCopyToken: @escaping Callback) {
+        appStateInteractor.saveAppState(.active)
         if let token = widgetsInteractor.exchangeToken {
             notificationInteractor.copyWithSuccess(value: token.removeWhitespaces())
             widgetsInteractor.clearExchangeToken()
@@ -127,7 +135,15 @@ extension RootModuleInteractor: RootModuleInteracting {
     }
     
     func shouldHandleURL(url: URL) -> Bool {
-        linkInteractor.shouldHandleURL(url: url) || fileInteractor.shouldHandleURL(url: url)
+        let shouldHandleURL = linkInteractor.shouldHandleURL(url: url)
+        let shouldHandleFileURL = fileInteractor.shouldHandleURL(url: url)
+        let value = shouldHandleURL || shouldHandleFileURL
+        
+        if value {
+            appStateInteractor.markURLWillBeHandled()
+        }
+        
+        return value
     }
     
     func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {

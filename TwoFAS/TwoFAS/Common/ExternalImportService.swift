@@ -28,5 +28,4 @@ enum ExternalImportService {
     case andOTP
     case authenticatorPro
     case otpAuthFile
-    case clipboard
 }
