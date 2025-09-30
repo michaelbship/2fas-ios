@@ -26,12 +26,16 @@ import CommonWatch
 import CloudKit
 
 final class ClearHandler {
-    private let cloudKit = CloudKit()
+    private let cloudKit: CloudKit
     private var isClearing = false
     private var batchCount: Int = 0
     private let batchElementLimit = 399
 
     var didClear: Callback?
+    
+    init(zoneManager: ZoneManaging) {
+        cloudKit = CloudKit(zoneManager: zoneManager)
+    }
     
     func clear(recordIDs: [CKRecord.ID]) {
         guard !isClearing else { return }

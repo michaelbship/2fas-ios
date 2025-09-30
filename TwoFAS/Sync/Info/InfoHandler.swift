@@ -37,11 +37,11 @@ final class InfoHandler {
         case enableWatch
     }
     private let userDefault = UserDefaults()
-    private let zoneID: CKRecordZone.ID
     private let syncEncryptionHandler: SyncEncryptionHandling
+    private let zoneManager: ZoneManaging
     
-    init(zoneID: CKRecordZone.ID, syncEncryptionHandler: SyncEncryptionHandling) {
-        self.zoneID = zoneID
+    init(zoneManager: ZoneManaging, syncEncryptionHandler: SyncEncryptionHandling) {
+        self.zoneManager = zoneManager
         self.syncEncryptionHandler = syncEncryptionHandler
     }
     
@@ -58,7 +58,7 @@ final class InfoHandler {
     
     func createNew(encryptionReference: Data) -> CKRecord? { // first creation with default value
         InfoRecord.create(
-            zoneID: zoneID,
+            zoneID: zoneManager.currentZoneID,
             version: Info.version,
             encryption: Info.Encryption.system.rawValue,
             allowedDevices: [allowedDevicesNone],

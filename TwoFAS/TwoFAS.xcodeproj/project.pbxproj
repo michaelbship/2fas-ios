@@ -457,6 +457,12 @@
 		C263F462299040F0009B0837 /* MainSplitPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263F461299040F0009B0837 /* MainSplitPresenter.swift */; };
 		C264AE6326D2DF3A00AE61E7 /* TimeVerification.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C29626D62370BD7F00C133BC /* TimeVerification.framework */; };
 		C264AE6826D2DF4200AE61E7 /* TimeVerification.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C29626D62370BD7F00C133BC /* TimeVerification.framework */; };
+		C264B64E2E8C7A5E00CA8648 /* CloudProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B64D2E8C7A5900CA8648 /* CloudProbe.swift */; };
+		C264B64F2E8C7A5E00CA8648 /* CloudProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B64D2E8C7A5900CA8648 /* CloudProbe.swift */; };
+		C264B6512E8C810700CA8648 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B6502E8C80FE00CA8648 /* ZoneManager.swift */; };
+		C264B6522E8C810700CA8648 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B6502E8C80FE00CA8648 /* ZoneManager.swift */; };
+		C264B6542E8C84D200CA8648 /* VaultVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B6532E8C84CE00CA8648 /* VaultVersion.swift */; };
+		C264B6552E8C84D200CA8648 /* VaultVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B6532E8C84CE00CA8648 /* VaultVersion.swift */; };
 		C26618A026126A8200ED52CB /* LabelComposeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C266189F26126A8200ED52CB /* LabelComposeViewController.swift */; };
 		C26654292725D6EA00DC3A3C /* PasswordTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26654282725D6EA00DC3A3C /* PasswordTextField.swift */; };
 		C266542B2725EF7B00DC3A3C /* ExportFileRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = C266542A2725EF7B00DC3A3C /* ExportFileRules.swift */; };
@@ -2443,6 +2449,9 @@
 		C263F46C299060FC009B0837 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TwoFASWidget.strings; sourceTree = "<group>"; };
 		C263F46D299060FC009B0837 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C263F46E299060FD009B0837 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C264B64D2E8C7A5900CA8648 /* CloudProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudProbe.swift; sourceTree = "<group>"; };
+		C264B6502E8C80FE00CA8648 /* ZoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneManager.swift; sourceTree = "<group>"; };
+		C264B6532E8C84CE00CA8648 /* VaultVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultVersion.swift; sourceTree = "<group>"; };
 		C266189F26126A8200ED52CB /* LabelComposeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelComposeViewController.swift; sourceTree = "<group>"; };
 		C26654282725D6EA00DC3A3C /* PasswordTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordTextField.swift; sourceTree = "<group>"; };
 		C266542A2725EF7B00DC3A3C /* ExportFileRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportFileRules.swift; sourceTree = "<group>"; };
@@ -5452,6 +5461,8 @@
 		C24D1C1B253C744E0029D27D /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				C264B6502E8C80FE00CA8648 /* ZoneManager.swift */,
+				C264B64D2E8C7A5900CA8648 /* CloudProbe.swift */,
 				C2F5443425685C2100611716 /* SyncInstance.swift */,
 				C2D507B5256477DA00151359 /* CloudHandler.swift */,
 				C22FFC3C2DA5C01900A68ABD /* WatchPairHandler.swift */,
@@ -8005,6 +8016,7 @@
 		C2E53AE42B62DDAF008E1E70 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				C264B6532E8C84CE00CA8648 /* VaultVersion.swift */,
 				C2EF7B1D2DA99D1000BAA559 /* PairedWatch.swift */,
 				C2C0A97E2DA31AD5000A1772 /* DeviceCode.swift */,
 				C2E53AE52B62DDAF008E1E70 /* WidgetServiceHandlerType.swift */,
@@ -10486,6 +10498,7 @@
 				C2D507B6256477DA00151359 /* CloudHandler.swift in Sources */,
 				C244EF11268674650040A58F /* Extensions.swift in Sources */,
 				C2D61E522560393000C5BE3A /* LogHandler.swift in Sources */,
+				C264B64E2E8C7A5E00CA8648 /* CloudProbe.swift in Sources */,
 				C25CB23B2D8744310099FAFD /* MigrationHandling.swift in Sources */,
 				C24EECF22687772800C6ABAA /* SectionCacheEntity+CoreDataProperties.swift in Sources */,
 				C24EECEC268772B600C6ABAA /* RecordType.swift in Sources */,
@@ -10513,6 +10526,7 @@
 				C2D61E4125602F5000C5BE3A /* LogEntity+CoreDataClass.swift in Sources */,
 				C26A5FE3290475EA00A5A620 /* Sync4-Sync5.xcmappingmodel in Sources */,
 				C27E6FB328FC87AD00AC9FD1 /* InfoRecord.swift in Sources */,
+				C264B6512E8C810700CA8648 /* ZoneManager.swift in Sources */,
 				C25CB2422D8758700099FAFD /* ServiceRecordEncryptionHandler.swift in Sources */,
 				C2C4F64B28FE08EB00285B81 /* InfoHandler.swift in Sources */,
 				C27E6FB628FC8B0000AC9FD1 /* Info.swift in Sources */,
@@ -10551,6 +10565,7 @@
 				C274C9A52BAB89C7008E7212 /* SectionCacheEntity+CoreDataProperties.swift in Sources */,
 				C274C9A62BAB89C7008E7212 /* RecordType.swift in Sources */,
 				C274C9A72BAB89C7008E7212 /* ClearHandler.swift in Sources */,
+				C264B6522E8C810700CA8648 /* ZoneManager.swift in Sources */,
 				C274C9A82BAB89C7008E7212 /* SyncTokenHandler.swift in Sources */,
 				C274C9A92BAB89C7008E7212 /* ServiceRecord2.swift in Sources */,
 				C2CCEB5D2D822AF70067FDCB /* ModificationQueue.swift in Sources */,
@@ -10574,6 +10589,7 @@
 				C274C9B82BAB89C7008E7212 /* LogEntity+CoreDataClass.swift in Sources */,
 				C274C9BA2BAB89C7008E7212 /* InfoRecord.swift in Sources */,
 				C2C0A8012DA2EF8A000A1772 /* RequirmentCheckHandling.swift in Sources */,
+				C264B64F2E8C7A5E00CA8648 /* CloudProbe.swift in Sources */,
 				C274C9BB2BAB89C7008E7212 /* InfoHandler.swift in Sources */,
 				C274C9BC2BAB89C7008E7212 /* Info.swift in Sources */,
 				C274C9BD2BAB89C7008E7212 /* RecordIDGenerator.swift in Sources */,
@@ -10660,6 +10676,7 @@
 				C29B42CA2D98B24800F49DCE /* CloudEncryptionType.swift in Sources */,
 				C274C9F62BAB8B92008E7212 /* PushNotificationsConfig.swift in Sources */,
 				C274C9F72BAB8B92008E7212 /* ServiceRules.swift in Sources */,
+				C264B6542E8C84D200CA8648 /* VaultVersion.swift in Sources */,
 				C274C9F82BAB8B92008E7212 /* ServiceData+.swift in Sources */,
 				C274C9F92BAB8B92008E7212 /* Notifications+.swift in Sources */,
 				C274C9FA2BAB8B92008E7212 /* Array+.swift in Sources */,
@@ -10898,6 +10915,7 @@
 				C263E9C72D8791D100E98298 /* Data+.swift in Sources */,
 				C2E53B252B62DDAF008E1E70 /* CommonSectionData.swift in Sources */,
 				C2E53B3E2B62DDAF008E1E70 /* Date+Extensions.swift in Sources */,
+				C264B6552E8C84D200CA8648 /* VaultVersion.swift in Sources */,
 				C2E53B3C2B62DDAF008E1E70 /* AttributedText+Formatting.swift in Sources */,
 				C2E53B1F2B62DDAF008E1E70 /* WidgetServiceHandlerType.swift in Sources */,
 				C2E53B3F2B62DDAF008E1E70 /* TintColor.swift in Sources */,

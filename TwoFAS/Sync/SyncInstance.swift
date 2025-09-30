@@ -35,14 +35,14 @@ public enum SyncInstance {
         errorLog: @escaping (String) -> Void
     ) {
         coreDataStack.logError = { errorLog($0) }
-        
-        let cloudKit = CloudKit()
+        let zoneManager = ZoneManager()
+        let cloudKit = CloudKit(zoneManager: zoneManager)
         let syncEncryptionHandler = SyncEncryptionHandler(
             reference: reference,
             localEncryptionKeyData: localEncryptionKeyData
         )
         let serviceRecordEncryptionHandler = ServiceRecordEncryptionHandler(
-            zoneID: cloudKit.zoneID,
+            zoneManager: zoneManager,
             encryptionHandler: syncEncryptionHandler
         )
         let logHandler = LogHandler(coreDataStack: coreDataStack)
@@ -52,7 +52,7 @@ public enum SyncInstance {
             serviceRecordEncryptionHandler: serviceRecordEncryptionHandler
         )
         let infoHandler = InfoHandler(
-            zoneID: cloudKit.zoneID,
+            zoneManager: zoneManager,
             syncEncryptionHandler: syncEncryptionHandler
         )
         let commonItemHandler = CommonItemHandler(

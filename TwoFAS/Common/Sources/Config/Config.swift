@@ -49,4 +49,8 @@ public enum Config {
     public static let twofasPassCheckLink = URL(string: "twofaspass://")!
     public static let twofasPassOpenLink = URL(string: "twofaspass://open")!
     public static let twofasPassAppStoreLink = URL(string: "itms-apps://itunes.apple.com/app/id6504464955")!
+    
+    public static let vaultV1 = "Vault1"
+    public static let vaultV2 = "Vault2"
+    public static let containerIdentifier = "iCloud.com.twofas.org.Vault"
 }

@@ -26,11 +26,11 @@ import CommonWatch
 #endif
 
 final class ServiceRecordEncryptionHandler {
-    private let zoneID: CKRecordZone.ID
+    private let zoneManager: ZoneManaging
     private let encryptionHandler: SyncEncryptionHandling
     
-    init(zoneID: CKRecordZone.ID, encryptionHandler: SyncEncryptionHandling) {
-        self.zoneID = zoneID
+    init(zoneManager: ZoneManaging, encryptionHandler: SyncEncryptionHandling) {
+        self.zoneManager = zoneManager
         self.encryptionHandler = encryptionHandler
     }
     
@@ -95,7 +95,7 @@ final class ServiceRecordEncryptionHandler {
         }
         
         return ServiceRecord3.create(
-            zoneID: zoneID,
+            zoneID: zoneManager.currentZoneID,
             name: name,
             secret: secret,
             unencryptedSecret: serviceData.secret,
