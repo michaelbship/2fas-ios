@@ -34,8 +34,8 @@ public enum SyncInstanceWatch {
         errorLog: @escaping (String) -> Void
     ) {
         coreDataStack.logError = { errorLog($0) }
-        
-        let cloudKit = CloudKit()
+        let zoneManager = ZoneManager()
+        let cloudKit = CloudKit(zoneManager: zoneManager)
         let logHandler = LogHandler(coreDataStack: coreDataStack)
         let syncEncryptionHandler = SyncEncryptionWatchHandler(
             reference: reference,
@@ -44,7 +44,7 @@ public enum SyncInstanceWatch {
         self.syncEncryptionHandler = syncEncryptionHandler
         let sectionHandler = SectionHandler(coreDataStack: coreDataStack)
         let serviceRecordEncryptionHandler = ServiceRecordEncryptionHandler(
-            zoneID: cloudKit.zoneID,
+            zoneManager: zoneManager,
             encryptionHandler: syncEncryptionHandler
         )
         let serviceHandler = ServiceHandler(
@@ -52,7 +52,7 @@ public enum SyncInstanceWatch {
             serviceRecordEncryptionHandler: serviceRecordEncryptionHandler
         )
         let infoHandler = InfoHandler(
-            zoneID: cloudKit.zoneID,
+            zoneManager: zoneManager,
             syncEncryptionHandler: syncEncryptionHandler
         )
         let commonItemHandler = CommonItemHandler(
@@ -74,7 +74,8 @@ public enum SyncInstanceWatch {
             logHandler: logHandler,
             commonItemHandler: commonItemHandler,
             itemHandler: itemHandler,
-            cloudKit: cloudKit
+            cloudKit: cloudKit,
+            zoneManager: zoneManager
         )
         let modificationQueue = ModificationQueue()
         let migrationHandler = MigrationHandlerWatchPlaceholder()
@@ -101,7 +102,9 @@ public enum SyncInstanceWatch {
             cloudKit: cloudKit,
             mergeHandler: mergeHandler,
             migrationHandler: migrationHandler,
-            requirementCheckHandler: requirementCheckHandler
+            requirementCheckHandler: requirementCheckHandler,
+            zoneManager: zoneManager,
+            infoHandler: infoHandler
         )
         
         logDataChangeImpl = LogDataChangeImpl(logHandler: logHandler)

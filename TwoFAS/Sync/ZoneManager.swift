@@ -19,7 +19,11 @@
 
 import Foundation
 import CloudKit
+#if os(iOS)
 import Common
+#elseif os(watchOS)
+import CommonWatch
+#endif
 
 protocol ZoneManaging {
     var currentZoneID: CKRecordZone.ID { get }
@@ -29,7 +33,7 @@ final class ZoneManager: ZoneManaging {
     private(set) var currentZoneID: CKRecordZone.ID
     
     init() {
-        currentZoneID = CKRecordZone.ID(zoneName: Config.vaultV1, ownerName: CKCurrentUserDefaultName)
+        currentZoneID = CKRecordZone.ID(zoneName: Config.vaultV2, ownerName: CKCurrentUserDefaultName)
     }
     
     func setCurrentZoneID(_ zoneName: String) {

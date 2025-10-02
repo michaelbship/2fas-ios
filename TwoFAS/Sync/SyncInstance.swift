@@ -74,7 +74,8 @@ public enum SyncInstance {
             logHandler: logHandler,
             commonItemHandler: commonItemHandler,
             itemHandler: itemHandler,
-            cloudKit: cloudKit
+            cloudKit: cloudKit,
+            zoneManager: zoneManager
         )
         let modificationQueue = ModificationQueue()
         let requirementCheck = RequirementCheckHandler(
@@ -83,7 +84,7 @@ public enum SyncInstance {
         )
         let migrationHandler = MigrationHandler(
             serviceHandler: serviceHandler,
-            zoneID: cloudKit.zoneID,
+            zoneManager: zoneManager,
             serviceRecordEncryptionHandler: serviceRecordEncryptionHandler,
             infoHandler: infoHandler,
             syncEncryptionHandler: syncEncryptionHandler
@@ -112,7 +113,9 @@ public enum SyncInstance {
             cloudKit: cloudKit,
             mergeHandler: mergeHandler,
             migrationHandler: migrationHandler,
-            requirementCheckHandler: requirementCheck
+            requirementCheckHandler: requirementCheck,
+            zoneManager: zoneManager,
+            infoHandler: infoHandler
         )
         let syncMigrationHandlerInstance = SyncMigrationHandler(
             migrationHandler: migrationHandler,
@@ -130,6 +133,7 @@ public enum SyncInstance {
         syncMigrationHandlerInstance.synchronize = { syncHandler.synchronize() }
         syncMigrationHandlerInstance.enable = { cloudHandler.enable() }
         cloudHandler.purgeUserEncryptionKey = { syncEncryptionHandler.purge() }
+        cloudHandler.setSystemEncryption = { syncEncryptionHandler.setSystemKey() }
         syncEncryptionHandler.initialize()
         
         syncMigrationHandler = syncMigrationHandlerInstance

@@ -57,7 +57,7 @@ public final class CloudProbe: CloudProbing {
         database.add(queryOperation)
     }
     
-    func recordMatchedBlock(_ recordID: CKRecord.ID, _ result: Result<CKRecord, any Error>) -> Void {
+    func recordMatchedBlock(_ recordID: CKRecord.ID, _ result: Result<CKRecord, any Error>) {
         switch result {
         case .success(let record):
             guard record.recordType == RecordType.info.rawValue else {
@@ -77,7 +77,7 @@ public final class CloudProbe: CloudProbing {
         }
     }
     
-    func queryResultBlock(_ result: Result<CKQueryOperation.Cursor?, any Error>) -> Void {
+    func queryResultBlock(_ result: Result<CKQueryOperation.Cursor?, any Error>) {
         defer {
             completion = nil
             foundVaults = [:]

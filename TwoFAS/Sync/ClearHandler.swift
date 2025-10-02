@@ -37,7 +37,7 @@ final class ClearHandler {
         cloudKit = CloudKit(zoneManager: zoneManager)
     }
     
-    func clear(recordIDs: [CKRecord.ID]) {
+    func clear(recordIDs: [CKRecord.ID], infoRecord: CKRecord) {
         guard !isClearing else { return }
         Log("ClearHandler - Deleting 2FAS Backup", module: .cloudSync)
         isClearing = true
@@ -53,8 +53,9 @@ final class ClearHandler {
         }
         
         let batch = recordIDs.grouped(by: batchElementLimit)
-        batchCount = batch.count
-        for i in 0..<batchCount {
+        batchCount = batch.count + 1 // info modification
+        cloudKit.modifyRecord(recordsToSave: [infoRecord], recordIDsToDelete: nil)
+        for i in 0..<batch.count {
             cloudKit.modifyRecord(recordsToSave: nil, recordIDsToDelete: batch[i])
         }
     }

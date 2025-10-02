@@ -53,20 +53,20 @@ final class MigrationHandler {
     private var migrationPath: MigrationPath?
     
     private let serviceHandler: ServiceHandler
-    private let zoneID: CKRecordZone.ID
+    private let zoneManager: ZoneManaging
     private let serviceRecordEncryptionHandler: ServiceRecordEncryptionHandler
     private let infoHandler: InfoHandler
     private let syncEncryptionHandler: SyncEncryptionHandler
    
     init(
         serviceHandler: ServiceHandler,
-        zoneID: CKRecordZone.ID,
+        zoneManager: ZoneManaging,
         serviceRecordEncryptionHandler: ServiceRecordEncryptionHandler,
         infoHandler: InfoHandler,
         syncEncryptionHandler: SyncEncryptionHandler
     ) {
         self.serviceHandler = serviceHandler
-        self.zoneID = zoneID
+        self.zoneManager = zoneManager
         self.serviceRecordEncryptionHandler = serviceRecordEncryptionHandler
         self.infoHandler = infoHandler
         self.syncEncryptionHandler = syncEncryptionHandler
@@ -92,7 +92,7 @@ extension MigrationHandler: MigrationHandling {
         case .v1v3:
             let listForRemoval = serviceHandler
                 .listAll()
-                .map({ ServiceRecord.recordID(with: $0.secret, zoneID: zoneID) })
+                .map({ ServiceRecord.recordID(with: $0.secret, zoneID: zoneManager.currentZoneID) })
             var listForCreationModification = listV3ForCreation() ?? []
             if let info = infoHandler.createNew(
                 encryptionReference: syncEncryptionHandler.encryptionReference ?? Data()
@@ -103,7 +103,7 @@ extension MigrationHandler: MigrationHandling {
         case .v2v3:
             let listForRemoval = serviceHandler
                 .listAll()
-                .map({ ServiceRecord2.recordID(with: $0.secret, zoneID: zoneID) })
+                .map({ ServiceRecord2.recordID(with: $0.secret, zoneID: zoneManager.currentZoneID) })
             var listForCreationModification = listV3ForCreation() ?? []
             infoHandler.update(
                 version: Info.version,

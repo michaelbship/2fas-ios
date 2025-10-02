@@ -458,7 +458,6 @@
 		C264AE6326D2DF3A00AE61E7 /* TimeVerification.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C29626D62370BD7F00C133BC /* TimeVerification.framework */; };
 		C264AE6826D2DF4200AE61E7 /* TimeVerification.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C29626D62370BD7F00C133BC /* TimeVerification.framework */; };
 		C264B64E2E8C7A5E00CA8648 /* CloudProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B64D2E8C7A5900CA8648 /* CloudProbe.swift */; };
-		C264B64F2E8C7A5E00CA8648 /* CloudProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B64D2E8C7A5900CA8648 /* CloudProbe.swift */; };
 		C264B6512E8C810700CA8648 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B6502E8C80FE00CA8648 /* ZoneManager.swift */; };
 		C264B6522E8C810700CA8648 /* ZoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B6502E8C80FE00CA8648 /* ZoneManager.swift */; };
 		C264B6542E8C84D200CA8648 /* VaultVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C264B6532E8C84CE00CA8648 /* VaultVersion.swift */; };
@@ -10589,7 +10588,6 @@
 				C274C9B82BAB89C7008E7212 /* LogEntity+CoreDataClass.swift in Sources */,
 				C274C9BA2BAB89C7008E7212 /* InfoRecord.swift in Sources */,
 				C2C0A8012DA2EF8A000A1772 /* RequirmentCheckHandling.swift in Sources */,
-				C264B64F2E8C7A5E00CA8648 /* CloudProbe.swift in Sources */,
 				C274C9BB2BAB89C7008E7212 /* InfoHandler.swift in Sources */,
 				C274C9BC2BAB89C7008E7212 /* Info.swift in Sources */,
 				C274C9BD2BAB89C7008E7212 /* RecordIDGenerator.swift in Sources */,

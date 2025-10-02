@@ -270,9 +270,8 @@ private extension ItemHandler {
 }
 
 extension ItemHandler {
-    func allEntityRecordIDs(zoneID: CKRecordZone.ID) -> [CKRecord.ID] {
+    func allEntityRecordIDs(zoneID: CKRecordZone.ID) -> [CKRecord.ID] { // minus Info - it should stay, but empty
         sectionHandler.listAll().map({ SectionRecord.recordID(with: $0.sectionID, zoneID: zoneID) }) +
-        serviceHandler.listAll().map({ ServiceRecord3.recordID(with: $0.secret, zoneID: zoneID) }) +
-        [InfoRecord.recordID(with: "", zoneID: zoneID)]
+        serviceHandler.listAll().map({ ServiceRecord3.recordID(with: $0.secret, zoneID: zoneID) })
     }
 }

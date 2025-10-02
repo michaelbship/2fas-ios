@@ -68,6 +68,16 @@ final class InfoHandler {
         )
     }
     
+    func clear() {
+        update(
+            version: nil,
+            encryption: .system,
+            allowedDevices: [allowedDevicesNone],
+            enableWatch: false,
+            encryptionReference: syncEncryptionHandler.encryptionReference
+        )
+    }
+    
     func update(
         version: Int?,
         encryption: Info.Encryption?,

@@ -92,6 +92,7 @@ public protocol CloudHandlerType: AnyObject {
     typealias StateChange = (CloudCurrentState) -> Void
     typealias UserToggledState = (Bool) -> Void
     typealias SecretSyncError = (String) -> Void
+    typealias SetSystemEncryption = () -> Void
     
     func registerForStateChange(_ listener: @escaping CloudHandlerStateListener, with id: String)
     func didReceiveRemoteNotification(
@@ -103,6 +104,7 @@ public protocol CloudHandlerType: AnyObject {
     var userToggledState: UserToggledState? { get set }
     var currentState: CloudCurrentState { get }
     var purgeUserEncryptionKey: (() -> Void)? { get set }
+    var setSystemEncryption: SetSystemEncryption? { get set }
     var isConnected: Bool { get }
     var isSynced: Bool { get }
     var secretSyncError: SecretSyncError? { get set }
@@ -119,6 +121,7 @@ final class CloudHandler: CloudHandlerType {
     var stateChange: StateChange?
     var secretSyncError: SecretSyncError?
     var purgeUserEncryptionKey: Callback?
+    var setSystemEncryption: SetSystemEncryption?
     
     private let cloudAvailability: CloudAvailability
     private let syncHandler: SyncHandler
@@ -128,6 +131,8 @@ final class CloudHandler: CloudHandlerType {
     private let mergeHandler: MergeHandler
     private let migrationHandler: MigrationHandling
     private let requirementCheckHandler: RequirementCheckHandling
+    private let zoneManager: ZoneManaging
+    private let infoHandler: InfoHandler
     
     private let notificationCenter = NotificationCenter.default
     
@@ -155,7 +160,9 @@ final class CloudHandler: CloudHandlerType {
         cloudKit: CloudKit,
         mergeHandler: MergeHandler,
         migrationHandler: MigrationHandling,
-        requirementCheckHandler: RequirementCheckHandling
+        requirementCheckHandler: RequirementCheckHandling,
+        zoneManager: ZoneManaging,
+        infoHandler: InfoHandler
     ) {
         self.cloudAvailability = cloudAvailability
         self.syncHandler = syncHandler
@@ -164,7 +171,9 @@ final class CloudHandler: CloudHandlerType {
         self.mergeHandler = mergeHandler
         self.migrationHandler = migrationHandler
         self.requirementCheckHandler = requirementCheckHandler
-        clearHandler = ClearHandler()
+        self.zoneManager = zoneManager
+        self.clearHandler = ClearHandler(zoneManager: zoneManager)
+        self.infoHandler = infoHandler
         
         cloudAvailability.availabilityCheckResult = { [weak self] resultStatus in
             self?.availabilityCheckResult(resultStatus)
@@ -381,9 +390,16 @@ final class CloudHandler: CloudHandlerType {
     
     private func clearBackupForSyncedState() {
         Log("Cloud Handler - clearBackupForSyncedState", module: .cloudSync)
-        let recordIDs = itemHandler.allEntityRecordIDs(zoneID: cloudKit.zoneID)
+        let recordIDs = itemHandler.allEntityRecordIDs(zoneID: zoneManager.currentZoneID)
         disable(notify: false)
-        clearHandler.clear(recordIDs: recordIDs)
+        setSystemEncryption?()
+        infoHandler.clear()
+        guard let infoRecord = infoHandler.recreateCached() else {
+            Log("Cloud Handler - error recreating info record for cloud clearing", module: .cloudSync)
+            return
+        }
+        
+        clearHandler.clear(recordIDs: recordIDs, infoRecord: infoRecord)
     }
     
     // MARK: -

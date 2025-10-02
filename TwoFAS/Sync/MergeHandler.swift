@@ -33,17 +33,20 @@ final class MergeHandler {
     private let commonItemHandler: CommonItemHandler
     private let itemHandler: ItemHandler
     private let cloudKit: CloudKit
+    private let zoneManager: ZoneManaging
     
     init(
         logHandler: LogHandler,
         commonItemHandler: CommonItemHandler,
         itemHandler: ItemHandler,
-        cloudKit: CloudKit
+        cloudKit: CloudKit,
+        zoneManager: ZoneManaging
     ) {
         self.logHandler = logHandler
         self.commonItemHandler = commonItemHandler
         self.itemHandler = itemHandler
         self.cloudKit = cloudKit
+        self.zoneManager = zoneManager
     }
 }
 
@@ -71,7 +74,7 @@ extension MergeHandler {
                 guard let type = RecordType(rawValue: item.kind) else { return nil }
                 return (entityID: item.entityID, type: type)
             }
-            deleteRecordsIDs += itemHandler.findItemsRecordIDs(for: deletedEntities, zoneID: cloudKit.zoneID)
+            deleteRecordsIDs += itemHandler.findItemsRecordIDs(for: deletedEntities, zoneID: zoneManager.currentZoneID)
             Log("MergeHandler: Deletition: Removing services logged: \(deleted.count), existing in cloud: \(deleteRecordsIDs.count)", module: .cloudSync)
             listToSend = itemHandler.filterDeleted(from: currentCache, deleted: deletedEntities)
         }
@@ -171,7 +174,15 @@ extension MergeHandler {
                 } else {
                     Log("MergeHandler: Preparation: new item", module: .cloudSync)
                     
-                    guard let record = itemHandler.record(for: type, item: item, index: index, zoneID: cloudKit.zoneID, allItems: items) else { continue }
+                    guard let record = itemHandler.record(
+                        for: type,
+                        item: item,
+                        index: index,
+                        zoneID: zoneManager.currentZoneID,
+                        allItems: items
+                    ) else {
+                        continue
+                    }
                     recordsToModify.append(record)
                 }
             }
