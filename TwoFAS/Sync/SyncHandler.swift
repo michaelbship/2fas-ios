@@ -217,7 +217,7 @@ final class SyncHandler {
         
         itemHandler.cleanUp()
         
-        Log("SyncHandler -  method: fetch finished successfuly - is syncing now", module: .cloudSync)
+        Log("SyncHandler -  method: fetch finished successfuly - continuing to sync with data", module: .cloudSync)
         guard mergeHandler.hasChanges else {
             Log("SyncHandler - No logs with changes. Exiting", module: .cloudSync)
             migrateIfNeeded()

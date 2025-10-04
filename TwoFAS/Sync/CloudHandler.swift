@@ -391,13 +391,14 @@ final class CloudHandler: CloudHandlerType {
     private func clearBackupForSyncedState() {
         Log("Cloud Handler - clearBackupForSyncedState", module: .cloudSync)
         let recordIDs = itemHandler.allEntityRecordIDs(zoneID: zoneManager.currentZoneID)
-        disable(notify: false)
         setSystemEncryption?()
         infoHandler.clear()
         guard let infoRecord = infoHandler.recreateCached() else {
             Log("Cloud Handler - error recreating info record for cloud clearing", module: .cloudSync)
             return
         }
+
+        disable(notify: false)
         
         clearHandler.clear(recordIDs: recordIDs, infoRecord: infoRecord)
     }

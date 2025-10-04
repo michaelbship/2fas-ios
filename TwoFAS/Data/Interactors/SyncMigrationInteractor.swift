@@ -28,6 +28,7 @@ public protocol SyncMigrationInteracting: AnyObject {
     var showNeverVersionOfiCloud: (() -> Void)? { get set }
     
     var migrationEndedSuccessfuly: (() -> Void)? { get set }
+    var reencryptionEndedSuccessfuly: (() -> Void)? { get set }
     var migrationError: ((CloudState.NotAvailableReason) -> Void)? { get set }
     
     var currentEncryption: CloudEncryptionType { get }
@@ -85,7 +86,22 @@ final class SyncMigrationInteractor {
         }
     }
     
-    var migrationEndedSuccessfuly: (() -> Void)?
+    var migrationEndedSuccessfuly: (() -> Void)? {
+        get {
+            mainRepository.cloudMigrationEndedSuccessfuly
+        }
+        set {
+            mainRepository.cloudMigrationEndedSuccessfuly = newValue
+        }
+    }
+    var reencryptionEndedSuccessfuly: (() -> Void)? {
+        get {
+            mainRepository.cloudReencryptionEndedSuccessfuly
+        }
+        set {
+            mainRepository.cloudReencryptionEndedSuccessfuly = newValue
+        }
+    }
     var migrationError: ((CloudState.NotAvailableReason) -> Void)?
     
     private let mainRepository: MainRepository
@@ -100,12 +116,6 @@ final class SyncMigrationInteractor {
             name: .syncStateChanged,
             object: nil
         )
-        mainRepository.cloudMigrationEndedSuccessfuly = { [weak self] in
-            self?.migrationEndedSuccessfuly?()
-        }
-        mainRepository.cloudReencryptionEndedSuccessfuly = { [weak self] in
-            self?.migrationEndedSuccessfuly?()
-        }
     }
     
     deinit {

@@ -82,10 +82,11 @@ extension ReencryptionHandler: ReencryptionHandling {
     }
     
     func syncSucceded() {
-        guard isReencrypting else { return }
-        Log("ReencryptionHandler: sync succeded", module: .cloudSync)
-        isReencrypting = false
-        Task { @MainActor in
+        if isReencrypting {
+            Log("ReencryptionHandler: sync succeded", module: .cloudSync)
+            isReencrypting = false
+        }
+        Task { @MainActor in // called every time on sync succeded. Closes other encryption windows
             didFinishReencryption?()
         }
     }

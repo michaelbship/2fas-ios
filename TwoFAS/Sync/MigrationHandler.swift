@@ -77,7 +77,7 @@ extension MigrationHandler: MigrationHandling {
         
     func migrateIfNeeded() -> Bool {
         guard isMigrating else { return false }
-        if zoneManager.currentZoneID.zoneName == Config.vaultV1 { // check it!
+        if zoneManager.currentZoneID.zoneName == Config.vaultV1 {
             Log("MigrationHandler: migration to v3 from older Vault", module: .cloudSync)
             zoneManager.setCurrentZoneID(Config.vaultV2)
             return true

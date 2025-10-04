@@ -39,15 +39,15 @@ final class ClearHandler {
     
     func clear(recordIDs: [CKRecord.ID], infoRecord: CKRecord) {
         guard !isClearing else { return }
-        Log("ClearHandler - Deleting 2FAS Backup", module: .cloudSync)
+        Log("ClearHandler: Deleting 2FAS Backup", module: .cloudSync)
         isClearing = true
         cloudKit.initialize()
         cloudKit.changesSavedSuccessfuly = { [weak self] in
             guard let self, batchCount > 0, isClearing else { return }
             batchCount -= 1
-            Log("ClearHandler - Batch Delete Saved Successfuly", module: .cloudSync)
+            Log("ClearHandler: Batch Delete Saved Successfuly", module: .cloudSync)
             if batchCount == 0 {
-                Log("ClearHandler - All Entries Deleted Successfuly", module: .cloudSync)
+                Log("ClearHandler: All Entries Deleted Successfuly", module: .cloudSync)
                 changesSavedSuccessfuly()
             }
         }
@@ -62,7 +62,7 @@ final class ClearHandler {
     
     private func changesSavedSuccessfuly() {
         isClearing = false
-        Log("ClearHandler - Deletition of 2FAS Backup was successful", module: .cloudSync)
+        Log("ClearHandler: Deletition of 2FAS Backup was successful", module: .cloudSync)
         cloudKit.clear()
         didClear?()
     }

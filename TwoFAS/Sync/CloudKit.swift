@@ -305,7 +305,6 @@ final class CloudKit {
         operation.qualityOfService = .userInitiated
         
         operation.perRecordDeleteBlock = { [weak self] recordID, result in
-            Log("CloudKit - perRecordDeleteBlock", module: .cloudSync)
             switch result {
             case .success:
                 Log("CloudKit - perRecordDeleteBlock - success", module: .cloudSync)
@@ -316,7 +315,6 @@ final class CloudKit {
             }
         }
         operation.perRecordSaveBlock = { [weak self] recordID, result in
-            Log("CloudKit - perRecordSaveBlock", module: .cloudSync)
             switch result {
             case .success(let record):
                 Log("CloudKit - perRecordSaveBlock - success", module: .cloudSync)
@@ -334,7 +332,6 @@ final class CloudKit {
             }
         }
         operation.modifyRecordsResultBlock = { [weak self] result in
-            Log("CloudKit - modifyRecordsResultBlock", module: .cloudSync)
             switch result {
             case .success:
                 Log("CloudKit - modifyRecordsResultBlock - success", module: .cloudSync)

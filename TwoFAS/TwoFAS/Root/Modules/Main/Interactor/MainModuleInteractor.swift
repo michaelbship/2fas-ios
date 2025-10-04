@@ -124,7 +124,12 @@ final class MainModuleInteractor {
             }
         }
         syncMigrationInteractor.showNeverVersionOfiCloud = { [weak self] in self?.showNeverVersionOfiCloud?() }
-        syncMigrationInteractor.migrationEndedSuccessfuly = { [weak self] in self?.migrationEndedSuccessfuly?() }
+        syncMigrationInteractor.migrationEndedSuccessfuly = { [weak self] in
+            self?.migrationEndedSuccessfuly?()
+        }
+        syncMigrationInteractor.reencryptionEndedSuccessfuly = { [weak self] in
+            self?.migrationEndedSuccessfuly?() // common method
+        }
         syncMigrationInteractor.migrationError = { [weak self] error in self?.migrationError?(error) }
     }
 }
