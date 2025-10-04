@@ -228,6 +228,7 @@ final class CloudKit {
         Log("CloudKit - clearing record changes", module: .cloudSync)
         clearRecordChanges()
         
+        // swiftlint:disable:next line_length
         Log(
             "CloudKit - fetching zone changes, token is set: \(ConstStorage.zoneChangeToken != nil), current zone: \(zoneManager.currentZoneID)",
             module: .cloudSync

@@ -244,6 +244,7 @@ final class SyncHandler {
         applyingChanges = false
         if migrationHandler.migrateIfNeeded() {
             resetStack()
+            commonItemHandler.logFirstImport()
             synchronize()
         } else {
             syncCompleted()
