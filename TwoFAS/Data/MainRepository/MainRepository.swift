@@ -155,6 +155,8 @@ protocol MainRepository: AnyObject {
     func watchPairingPair(deviceCodePath: DeviceCodePath, deviceName: String)
     // MARK: Migration
     var cloudShowMigrationToNewestVersion: (() -> Void)? { get set }
+    var cloudMigrationEndedSuccessfuly: (() -> Void)? { get set }
+    var cloudReencryptionEndedSuccessfuly: (() -> Void)? { get set }
     var cloudShowiCloudIsEncryptedByUser: (() -> Void)? { get set }
     var cloudShowiCloudIsEncryptedBySystem: (() -> Void)? { get set }
     var cloudShowNeverVersionOfiCloud: (() -> Void)? { get set }

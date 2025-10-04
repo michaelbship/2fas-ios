@@ -85,6 +85,24 @@ extension MainRepositoryImpl {
         }
     }
     
+    var cloudMigrationEndedSuccessfuly: (() -> Void)? {
+        get {
+            syncMigration.migrationEndedSuccessfuly
+        }
+        set {
+            syncMigration.migrationEndedSuccessfuly = newValue
+        }
+    }
+    
+    var cloudReencryptionEndedSuccessfuly: (() -> Void)? {
+        get {
+            syncMigration.reencryptionEndedSuccessfuly
+        }
+        set {
+            syncMigration.reencryptionEndedSuccessfuly = newValue
+        }
+    }
+    
     var cloudShowiCloudIsEncryptedByUser: (() -> Void)? {
         get {
             syncMigration.showiCloudIsEncryptedByUser

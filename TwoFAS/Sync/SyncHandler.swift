@@ -34,6 +34,7 @@ final class SyncHandler {
     private let mergeHandler: MergeHandler
     private let migrationHandler: MigrationHandling
     private let requirementCheck: RequirementCheckHandling
+    private let reencryptionHandler: ReencryptionHandling
     
     private var isSyncing = false
     private var applyingChanges = false
@@ -59,7 +60,8 @@ final class SyncHandler {
         modificationQueue: ModificationQueue,
         mergeHandler: MergeHandler,
         migrationHandler: MigrationHandling,
-        requirementCheck: RequirementCheckHandling
+        requirementCheck: RequirementCheckHandling,
+        reencryptionHandler: ReencryptionHandling
     ) {
         self.itemHandler = itemHandler
         self.commonItemHandler = commonItemHandler
@@ -69,6 +71,7 @@ final class SyncHandler {
         self.mergeHandler = mergeHandler
         self.migrationHandler = migrationHandler
         self.requirementCheck = requirementCheck
+        self.reencryptionHandler = reencryptionHandler
         
         cloudKit.initialize()
         
@@ -146,8 +149,11 @@ final class SyncHandler {
         isSyncing = true
         startedSync?()
         
-        modificationQueue.clear()
-        cloudKit.cloudSync()
+        Task {
+            await migrationHandler.checkIfMigrationNeeded()
+            modificationQueue.clear()
+            cloudKit.cloudSync()
+        }
     }
     
     func clearCacheAndDisable() {
@@ -183,22 +189,22 @@ final class SyncHandler {
         
         guard !requirementCheck.checkIfStopSync(
             using: itemHandler.updatedCreated,
-            migrationPending: migrationHandler.isMigrating
+            migrationPending: migrationHandler.isMigrating,
+            encryptionPending: reencryptionHandler.willReencrypt
         ) else {
             clearCacheAndDisable()
             return
         }
         
         Log("SyncHandler - commiting iCloud state into item handler", module: .cloudSync)
-        itemHandler.commit(ignoreRemovals: migrationHandler.isMigrating)
-        migrationHandler.itemsCommited()
-        
-        if !itemHandler.isCacheEmpty && migrationHandler.checkIfMigrationNeeded() { // if pending - send changes to server and break cycle
-            Log("SyncHandler - migration needed", module: .cloudSync)
-            let (recordIDsToDeleteOnServer, recordsToModifyOnServer) = migrationHandler.migrate()
+        itemHandler.commit()
+
+        if !itemHandler.isCacheEmpty && !migrationHandler.isMigrating && reencryptionHandler.willReencrypt {
+            Log("SyncHandler - reencryption needed", module: .cloudSync)
+            let (recordIDsToDeleteOnServer, recordsToModifyOnServer) = reencryptionHandler.listForReencryption()
             itemHandler.cleanUp()
             
-            Log("SyncHandler - Sending migrated changes", module: .cloudSync)
+            Log("SyncHandler - Sending reencrypted changes", module: .cloudSync)
             applyingChanges = true
             
             modificationQueue.setRecordsToModifyOnServer(recordsToModifyOnServer, deleteIDs: recordIDsToDeleteOnServer)
@@ -209,12 +215,11 @@ final class SyncHandler {
         }
         
         itemHandler.cleanUp()
-    
+        
         Log("SyncHandler -  method: fetch finished successfuly - is syncing now", module: .cloudSync)
         guard mergeHandler.hasChanges else {
             Log("SyncHandler - No logs with changes. Exiting", module: .cloudSync)
-            applyingChanges = false
-            syncCompleted()
+            migrateIfNeeded()
             return
         }
         
@@ -223,8 +228,7 @@ final class SyncHandler {
         guard recordIDsToDeleteOnServer != nil || recordsToModifyOnServer != nil else {
             Log("SyncHandler - Nothing to delete or modify", module: .cloudSync)
             logHandler.deleteAll()
-            applyingChanges = false
-            syncCompleted()
+            migrateIfNeeded()
             return
         }
         Log("SyncHandler - Sending changes", module: .cloudSync)
@@ -235,6 +239,16 @@ final class SyncHandler {
         cloudKit.modifyRecord(recordsToSave: current.modify, recordIDsToDelete: current.delete)
     }
     
+    private func migrateIfNeeded() {
+        if migrationHandler.migrateIfNeeded() {
+            resetStack()
+            cloudKit.cloudSync()
+        } else {
+            applyingChanges = false
+            syncCompleted()
+        }
+    }
+    
     private func changesSavedSuccessfuly() {
         guard isSyncing, applyingChanges else { return }
         modificationQueue.prevBatchProcessed()
@@ -242,6 +256,7 @@ final class SyncHandler {
         if modificationQueue.finished {
             Log("SyncHandler - All Changes Saved Successfuly", module: .cloudSync)
             logHandler.deleteAllApplied()
+            reencryptionHandler.changesApplied()
             syncCompleted()
         } else {
             Log("SyncHandler - Batch Changes Saved Successfuly. Preparing next batch", module: .cloudSync)
@@ -255,7 +270,7 @@ final class SyncHandler {
         Log("SyncHandler - Sync completed, clearing changes for sending", module: .cloudSync)
         isSyncing = false
         
-        if logHandler.countNotApplied() > 0 || applyingChanges || migrationHandler.isMigrating {
+        if logHandler.countNotApplied() > 0 || applyingChanges {
             Log("SyncHandler - New sync on it way. Not applied changes: \(logHandler.countNotApplied()) or need to apply changes: \(applyingChanges)", module: .cloudSync)
             synchronize()
             return
@@ -283,6 +298,7 @@ final class SyncHandler {
             self.fromNotificationCompletionHandler = nil
         }
         
+        reencryptionHandler.syncSucceded()
         finishedSync?()
     }
     

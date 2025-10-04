@@ -18,14 +18,14 @@
 //
 
 import CloudKit
-import CommonWatch
 
-final class MigrationHandlerWatchPlaceholder: MigrationHandling {
-    var isMigratingToV3: Callback?
-    var finishedMigratingToV3: Callback?
+protocol ReencryptionHandling: AnyObject {
+    var isReencryptionPending: (() -> Bool)? { get set }
+    var didStartReencryption: (() -> Void)? { get set }
+    var didFinishReencryption: (() -> Void)? { get set }
     
-    var isMigrating: Bool { false }
-    
-    func checkIfMigrationNeeded() async {}
-    func migrateIfNeeded() -> Bool { false }
+    var willReencrypt: Bool { get }
+    func listForReencryption() -> (recordIDsToDeleteOnServer: [CKRecord.ID]?, recordsToModifyOnServer: [CKRecord]?)
+    func changesApplied()
+    func syncSucceded()
 }

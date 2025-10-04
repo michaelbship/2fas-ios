@@ -71,10 +71,8 @@ extension ItemHandler {
         infoHandler.metadata == nil
     }
     
-    func commit(ignoreRemovals: Bool = false) {
-        if !ignoreRemovals {
-            queuedDeleteEntries(deletedEntries)
-        }
+    func commit() {
+        queuedDeleteEntries(deletedEntries)
         queuedUpdateOrCreate(with: updatedCreated)
     }
     

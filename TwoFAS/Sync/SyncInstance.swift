@@ -83,11 +83,14 @@ public enum SyncInstance {
             infoHandler: infoHandler
         )
         let migrationHandler = MigrationHandler(
-            serviceHandler: serviceHandler,
             zoneManager: zoneManager,
+            cloudProbe: CloudProbe()
+        )
+        let reencryptionHandler = ReencryptionHandler(
+            serviceHandler: serviceHandler,
             serviceRecordEncryptionHandler: serviceRecordEncryptionHandler,
-            infoHandler: infoHandler,
-            syncEncryptionHandler: syncEncryptionHandler
+            syncEncryptionHandler: syncEncryptionHandler,
+            infoHandler: infoHandler
         )
         let syncHandler = SyncHandler(
             itemHandler: itemHandler,
@@ -97,7 +100,8 @@ public enum SyncInstance {
             modificationQueue: modificationQueue,
             mergeHandler: mergeHandler,
             migrationHandler: migrationHandler,
-            requirementCheck: requirementCheck
+            requirementCheck: requirementCheck,
+            reencryptionHandler: reencryptionHandler
         )
         let watchPairHandlerInstance = WatchPairHandler(
             syncEncryptionHandler: syncEncryptionHandler,
@@ -119,6 +123,7 @@ public enum SyncInstance {
         )
         let syncMigrationHandlerInstance = SyncMigrationHandler(
             migrationHandler: migrationHandler,
+            reencryptionHandler: reencryptionHandler,
             syncEncryptionHandler: syncEncryptionHandler
         )
         watchPairHandlerInstance.synchronize = { cloudHandler.synchronize() }

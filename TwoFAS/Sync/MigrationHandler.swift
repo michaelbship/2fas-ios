@@ -22,162 +22,69 @@ import CloudKit
 import Common
 
 final class MigrationHandler {
-    private enum MigrationPath {
-        case v1v3
-        case v2v3
-        case reencryption
-        
-        var migratingToNewestVersion: Bool {
-            switch self {
-            case .v1v3, .v2v3: true
-            case .reencryption: false
-            }
-        }
-    }
+    var isMigratingToV3: Callback?
+    var finishedMigratingToV3: Callback?
+    var clearCloudState: Callback?
+    var syncAgain: Callback?
     
-    var isReencryptionPending: (() -> Bool)?
-    var isMigratingToV3: (() -> Void)?
+    private(set) var isMigrating = false
     
-    var isMigrating: Bool {
-        migrationPath != nil
-    }
-    
-    var currentEncryption: CloudEncryptionType? {
-        switch infoHandler.encryptionType {
-        case .system: .system
-        case .user: .user
-        case .none: nil
-        }
-    }
-    
-    private var migrationPath: MigrationPath?
-    
-    private let serviceHandler: ServiceHandler
-    private let zoneManager: ZoneManaging
-    private let serviceRecordEncryptionHandler: ServiceRecordEncryptionHandler
-    private let infoHandler: InfoHandler
-    private let syncEncryptionHandler: SyncEncryptionHandler
+    private let zoneManager: ZoneManager
+    private let cloudProbe: CloudProbing
    
     init(
-        serviceHandler: ServiceHandler,
-        zoneManager: ZoneManaging,
-        serviceRecordEncryptionHandler: ServiceRecordEncryptionHandler,
-        infoHandler: InfoHandler,
-        syncEncryptionHandler: SyncEncryptionHandler
+        zoneManager: ZoneManager,
+        cloudProbe: CloudProbing
     ) {
-        self.serviceHandler = serviceHandler
         self.zoneManager = zoneManager
-        self.serviceRecordEncryptionHandler = serviceRecordEncryptionHandler
-        self.infoHandler = infoHandler
-        self.syncEncryptionHandler = syncEncryptionHandler
+        self.cloudProbe = cloudProbe
     }
 }
 
 extension MigrationHandler: MigrationHandling {
-    func checkIfMigrationNeeded() -> Bool {
-        guard let migrationPathValue = checkMigrationVersion() else {
-            return false
+    func checkIfMigrationNeeded() async {
+        guard !ConstStorage.cloudMigratedToV3 else {
+            Log("MigrationHandler: cached value - already migrated", module: .cloudSync)
+            zoneManager.setCurrentZoneID(Config.vaultV2)
+            return
         }
-        if migrationPathValue.migratingToNewestVersion {
+        Log("MigrationHandler: probing cloud", module: .cloudSync)
+        do {
+            let result = try await withCheckedThrowingContinuation { continuation in
+                cloudProbe.checkForVaults { result in
+                    continuation.resume(with: result)
+                }
+            }
+            if result.contains(where: { $0 == .v3 }) {
+                Log("MigrationHandler: probed value - already migrated", module: .cloudSync)
+                zoneManager.setCurrentZoneID(Config.vaultV2)
+                ConstStorage.cloudMigratedToV3 = true
+                return
+            }
+            Log("MigrationHandler: awaiting migration to v3", module: .cloudSync)
+            zoneManager.setCurrentZoneID(Config.vaultV1)
+            isMigrating = true
             isMigratingToV3?()
-        }
-        migrationPath = migrationPathValue
-        return true
-    }
-    
-    func migrate() -> (recordIDsToDeleteOnServer: [CKRecord.ID]?, recordsToModifyOnServer: [CKRecord]?) {
-        guard let migrationPath else { return (nil, nil) }
-        Log("MigrationHandler: migrating: \(migrationPath)")
-        switch migrationPath {
-        case .v1v3:
-            let listForRemoval = serviceHandler
-                .listAll()
-                .map({ ServiceRecord.recordID(with: $0.secret, zoneID: zoneManager.currentZoneID) })
-            var listForCreationModification = listV3ForCreation() ?? []
-            if let info = infoHandler.createNew(
-                encryptionReference: syncEncryptionHandler.encryptionReference ?? Data()
-            ) {
-                listForCreationModification.append(info)
-            }
-            return (recordIDsToDeleteOnServer: listForRemoval, recordsToModifyOnServer: listForCreationModification)
-        case .v2v3:
-            let listForRemoval = serviceHandler
-                .listAll()
-                .map({ ServiceRecord2.recordID(with: $0.secret, zoneID: zoneManager.currentZoneID) })
-            var listForCreationModification = listV3ForCreation() ?? []
-            infoHandler.update(
-                version: Info.version,
-                encryption: syncEncryptionHandler.encryptionType,
-                allowedDevices: nil,
-                enableWatch: nil,
-                encryptionReference: syncEncryptionHandler.encryptionReference
-            )
-            if let info = infoHandler.recreate() { // updating - should exist
-                listForCreationModification.append(info)
-            }
-            return (recordIDsToDeleteOnServer: listForRemoval, recordsToModifyOnServer: listForCreationModification)
-        case .reencryption:
-            var listForCreationModification = listV3ForModification() ?? []
-            infoHandler.update(
-                version: Info.version,
-                encryption: syncEncryptionHandler.encryptionType,
-                allowedDevices: nil,
-                enableWatch: nil,
-                encryptionReference: syncEncryptionHandler.encryptionReference
-            )
-            if let info = infoHandler.recreate() { // updating - should exist
-                listForCreationModification.append(info)
-            }
-            return (recordIDsToDeleteOnServer: nil, recordsToModifyOnServer: listForCreationModification)
+        } catch {
+            Log("MigrationHandler - can't probe cloud", module: .cloudSync, severity: .error)
+            zoneManager.setCurrentZoneID(Config.vaultV2)
+            clearCloudState?()
+            return
         }
     }
         
-    func itemsCommited() {
-        migrationPath = nil
-        if isReencryptionPending?() == true {
-            migrationPath = .reencryption
+    func migrateIfNeeded() -> Bool {
+        guard isMigrating else { return false }
+        if zoneManager.currentZoneID.zoneName == Config.vaultV1 { // check it!
+            Log("MigrationHandler: migration to v3 from older Vault", module: .cloudSync)
+            zoneManager.setCurrentZoneID(Config.vaultV2)
+            return true
+        } else {
+            Log("MigrationHandler: migrated", module: .cloudSync)
+            isMigrating = false
+            finishedMigratingToV3?()
+            ConstStorage.cloudMigratedToV3 = true
+            return false
         }
-    }
-}
-
-private extension MigrationHandler {
-    func listV3ForModification() -> [CKRecord]? {
-        let listWithMetadata = serviceHandler.listAllWithMetadata()
-        let list = listWithMetadata.map({ $0.0 })
-        let servicesRecords = listWithMetadata.compactMap({ serviceRecordEncryptionHandler.createServiceRecord3(
-            from: $0.0,
-            metadata: $0.1,
-            list: list
-        ) })
-        guard !servicesRecords.isEmpty else {
-            return nil
-        }
-        return servicesRecords
-    }
-    
-    func listV3ForCreation() -> [CKRecord]? {
-        let list = serviceHandler.listAll()
-        let servicesRecords = list.compactMap({ serviceRecordEncryptionHandler.createServiceRecord3(
-            from: $0,
-            metadata: nil,
-            list: list
-        ) })
-        guard !servicesRecords.isEmpty else {
-            return nil
-        }
-        return servicesRecords
-    }
-    
-    private func checkMigrationVersion() -> MigrationPath? {
-        guard migrationPath == nil else {
-            return migrationPath
-        }
-        guard let version = infoHandler.version else {
-            return .v1v3
-        }
-        if version == Info.version - 1 {
-            return .v2v3
-        }
-        return nil
     }
 }

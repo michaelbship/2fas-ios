@@ -25,14 +25,11 @@ import CommonWatch
 #endif
 
 protocol MigrationHandling: AnyObject {
+    var isMigratingToV3: Callback? { get set }
+    var finishedMigratingToV3: Callback? { get set }
+    
     var isMigrating: Bool { get }
     
-    var currentEncryption: CloudEncryptionType? { get }
-    
-    var isReencryptionPending: (() -> Bool)? { get set }
-    var isMigratingToV3: (() -> Void)? { get set }
-    
-    func checkIfMigrationNeeded() -> Bool
-    func migrate() -> (recordIDsToDeleteOnServer: [CKRecord.ID]?, recordsToModifyOnServer: [CKRecord]?)
-    func itemsCommited()
+    func checkIfMigrationNeeded() async
+    func migrateIfNeeded() -> Bool
 }

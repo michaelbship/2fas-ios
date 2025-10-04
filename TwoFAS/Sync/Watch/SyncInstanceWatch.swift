@@ -91,7 +91,8 @@ public enum SyncInstanceWatch {
             modificationQueue: modificationQueue,
             mergeHandler: mergeHandler,
             migrationHandler: migrationHandler,
-            requirementCheck: requirementCheckHandler
+            requirementCheck: requirementCheckHandler,
+            reencryptionHandler: ReencryptionHandlerWatchPlaceholder()
         )
         syncEncryptionHandler.initialize()
         let cloudAvailability = CloudAvailability(container: syncHandler.container)

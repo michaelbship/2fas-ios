@@ -1400,6 +1400,10 @@
 		C2F9E15F2D983938004B7DFA /* SyncMigrationToNewestVersionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F9E15E2D983936004B7DFA /* SyncMigrationToNewestVersionPresenter.swift */; };
 		C2F9E1612D983A85004B7DFA /* SyncMigrationToNewestVersionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F9E1602D983A83004B7DFA /* SyncMigrationToNewestVersionViewController.swift */; };
 		C2F9E1632D98607B004B7DFA /* SyncMigrationToNewestVersionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F9E1622D986079004B7DFA /* SyncMigrationToNewestVersionView.swift */; };
+		C2FA26692E9189230003BCF0 /* ReencryptionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA26672E91891B0003BCF0 /* ReencryptionHandler.swift */; };
+		C2FA266B2E91B3650003BCF0 /* ReencryptionHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA266A2E91B3650003BCF0 /* ReencryptionHandling.swift */; };
+		C2FA266C2E91B3650003BCF0 /* ReencryptionHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA266A2E91B3650003BCF0 /* ReencryptionHandling.swift */; };
+		C2FA266E2E91B3940003BCF0 /* ReencryptionHandlerWatchPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA266D2E91B38B0003BCF0 /* ReencryptionHandlerWatchPlaceholder.swift */; };
 		C2FA3E7B280AD60D0097ED71 /* AuthRequestFilterOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA3E7A280AD60D0097ED71 /* AuthRequestFilterOptions.swift */; };
 		C2FA3E7D280ADCC90097ED71 /* StorageRepositoryImpl+AuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA3E7C280ADCC90097ED71 /* StorageRepositoryImpl+AuthRequest.swift */; };
 		C2FA3E7F280ADDB40097ED71 /* AuthRequestEntityToPairedAuthRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FA3E7E280ADDB40097ED71 /* AuthRequestEntityToPairedAuthRequest.swift */; };
@@ -3186,6 +3190,9 @@
 		C2F9E15E2D983936004B7DFA /* SyncMigrationToNewestVersionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMigrationToNewestVersionPresenter.swift; sourceTree = "<group>"; };
 		C2F9E1602D983A83004B7DFA /* SyncMigrationToNewestVersionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMigrationToNewestVersionViewController.swift; sourceTree = "<group>"; };
 		C2F9E1622D986079004B7DFA /* SyncMigrationToNewestVersionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMigrationToNewestVersionView.swift; sourceTree = "<group>"; };
+		C2FA26672E91891B0003BCF0 /* ReencryptionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReencryptionHandler.swift; sourceTree = "<group>"; };
+		C2FA266A2E91B3650003BCF0 /* ReencryptionHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReencryptionHandling.swift; sourceTree = "<group>"; };
+		C2FA266D2E91B38B0003BCF0 /* ReencryptionHandlerWatchPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReencryptionHandlerWatchPlaceholder.swift; sourceTree = "<group>"; };
 		C2FA3E76280AC5130097ED71 /* WebExtensionAuthInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebExtensionAuthInteractor.swift; sourceTree = "<group>"; };
 		C2FA3E7A280AD60D0097ED71 /* AuthRequestFilterOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRequestFilterOptions.swift; sourceTree = "<group>"; };
 		C2FA3E7C280ADCC90097ED71 /* StorageRepositoryImpl+AuthRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageRepositoryImpl+AuthRequest.swift"; sourceTree = "<group>"; };
@@ -4211,6 +4218,7 @@
 			children = (
 				8F5C0C6D2BFFACA900D73ADE /* Sync.xcdatamodeld */,
 				C274CA992BAB94B3008E7212 /* SyncInstanceWatch.swift */,
+				C2FA266D2E91B38B0003BCF0 /* ReencryptionHandlerWatchPlaceholder.swift */,
 				C2C0A7FD2DA2E8C9000A1772 /* SyncEncryptionWatchHandler.swift */,
 				C2C0A8022DA2F00A000A1772 /* RequirementCheckWatchHandler.swift */,
 				C25CB3BF2D8784EF0099FAFD /* MigrationHandlerWatchPlaceholder.swift */,
@@ -5460,6 +5468,7 @@
 		C24D1C1B253C744E0029D27D /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				C2FA26672E91891B0003BCF0 /* ReencryptionHandler.swift */,
 				C264B6502E8C80FE00CA8648 /* ZoneManager.swift */,
 				C264B64D2E8C7A5900CA8648 /* CloudProbe.swift */,
 				C2F5443425685C2100611716 /* SyncInstance.swift */,
@@ -8356,6 +8365,7 @@
 		C2F543FB25672EBA00611716 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				C2FA266A2E91B3650003BCF0 /* ReencryptionHandling.swift */,
 				C2C0A9812DA321F4000A1772 /* SyncEncryptionHandling.swift */,
 				C24D1C1C253C744E0029D27D /* Sync.h */,
 				C24D1C1D253C744E0029D27D /* Info.plist */,
@@ -10478,6 +10488,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2FA266B2E91B3650003BCF0 /* ReencryptionHandling.swift in Sources */,
 				C23BAB042545A861009B1EF8 /* CloudKit.swift in Sources */,
 				C25CB2392D87440F0099FAFD /* MigrationHandler.swift in Sources */,
 				C201F24D25BDD017001DA257 /* SecretValidation.swift in Sources */,
@@ -10513,6 +10524,7 @@
 				C2EF401525582A7D0006735E /* Sync.xcdatamodeld in Sources */,
 				C24EECFA26878C5C00C6ABAA /* CommonItemHandler.swift in Sources */,
 				C25CB3C32D878BCD0099FAFD /* SyncEncryptionHandler.swift in Sources */,
+				C2FA26692E9189230003BCF0 /* ReencryptionHandler.swift in Sources */,
 				C24587812D8B918B00F28B22 /* SyncMigrationHandler.swift in Sources */,
 				C2EF3F6E25575D730006735E /* ServiceRecord.swift in Sources */,
 				C2D75D37297D51B60002531E /* iCloudIdentifier.swift in Sources */,
@@ -10557,10 +10569,12 @@
 				C274C99E2BAB89C7008E7212 /* CloudKitErrorParser.swift in Sources */,
 				C213BC192BAC3BD5000794C9 /* CommonItemHandler.swift in Sources */,
 				C274C99F2BAB89C7008E7212 /* SectionHandler.swift in Sources */,
+				C2FA266C2E91B3650003BCF0 /* ReencryptionHandling.swift in Sources */,
 				C274C9A02BAB89C7008E7212 /* Types.swift in Sources */,
 				C274C9A22BAB89C7008E7212 /* CloudHandler.swift in Sources */,
 				C274C9A32BAB89C7008E7212 /* Extensions.swift in Sources */,
 				C274C9A42BAB89C7008E7212 /* LogHandler.swift in Sources */,
+				C2FA266E2E91B3940003BCF0 /* ReencryptionHandlerWatchPlaceholder.swift in Sources */,
 				C274C9A52BAB89C7008E7212 /* SectionCacheEntity+CoreDataProperties.swift in Sources */,
 				C274C9A62BAB89C7008E7212 /* RecordType.swift in Sources */,
 				C274C9A72BAB89C7008E7212 /* ClearHandler.swift in Sources */,

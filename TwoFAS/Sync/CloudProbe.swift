@@ -22,23 +22,23 @@ import CloudKit
 import Common
 
 public protocol CloudProbing: AnyObject {
-    func checkForVaults(completion: @escaping (Result<[CKRecordZone.ID: VaultVersion], Error>) -> Void)
+    func checkForVaults(completion: @escaping (Result<[VaultVersion], Error>) -> Void)
 }
 
 public final class CloudProbe: CloudProbing {
     private let container: CKContainer
     private let database: CKDatabase
     
-    private var completion: ((Result<[CKRecordZone.ID: VaultVersion], Error>) -> Void)?
-    private var foundVaults: [CKRecordZone.ID: VaultVersion] = [:]
+    private var completion: ((Result<[VaultVersion], Error>) -> Void)?
+    private var foundVaults: [VaultVersion] = []
     
     public init() {
         container = CKContainer(identifier: Config.containerIdentifier)
         database = container.privateCloudDatabase
     }
     
-    public func checkForVaults(completion: @escaping (Result<[CKRecordZone.ID: VaultVersion], Error>) -> Void) {
-        Log("CloudProbe - checking Vault")
+    public func checkForVaults(completion: @escaping (Result<[VaultVersion], Error>) -> Void) {
+        Log("CloudProbe: checking Vault", module: .cloudSync)
         
         self.completion = completion
         
@@ -61,32 +61,35 @@ public final class CloudProbe: CloudProbing {
         switch result {
         case .success(let record):
             guard record.recordType == RecordType.info.rawValue else {
+                Log("CloudProbe: Error - incorrect record type!", module: .cloudSync, severity: .error)
                 return
             }
             let zoneID = recordID.zoneID
             let vaultInfo = InfoRecord(record: record)
             if vaultInfo.version == 1 {
-                foundVaults[zoneID] = VaultVersion.v1
+                Log("CloudProbe: found V1 in \(zoneID)", module: .cloudSync)
+                foundVaults.append(VaultVersion.v1)
             } else if vaultInfo.version == 2 {
-                foundVaults[zoneID] = VaultVersion.v2
+                Log("CloudProbe: found V2 in \(zoneID)", module: .cloudSync)
+                foundVaults.append(VaultVersion.v2)
             } else {
-                foundVaults[zoneID] = VaultVersion.v3
+                Log("CloudProbe: found V3 in \(zoneID)", module: .cloudSync)
+                foundVaults.append(VaultVersion.v3)
             }
         case .failure(let error):
-            Log("CloudProbe - Error while checking Vault \(error)")
+            Log("CloudProbe: Error while checking Vault  \(error)", module: .cloudSync, severity: .error)
         }
     }
     
     func queryResultBlock(_ result: Result<CKQueryOperation.Cursor?, any Error>) {
         defer {
             completion = nil
-            foundVaults = [:]
+            foundVaults = []
         }
         DispatchQueue.main.async {
-            
             switch result {
             case .success:
-                Log("CloudProbe - Query completed!")
+                Log("CloudProbe: Query completed!, Vaults found: \(self.foundVaults.count)", module: .cloudSync)
                 self.completion?(.success(self.foundVaults))
             case .failure(let error):
                 self.completion?(.failure(error))

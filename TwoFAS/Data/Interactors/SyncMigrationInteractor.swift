@@ -100,6 +100,12 @@ final class SyncMigrationInteractor {
             name: .syncStateChanged,
             object: nil
         )
+        mainRepository.cloudMigrationEndedSuccessfuly = { [weak self] in
+            self?.migrationEndedSuccessfuly?()
+        }
+        mainRepository.cloudReencryptionEndedSuccessfuly = { [weak self] in
+            self?.migrationEndedSuccessfuly?()
+        }
     }
     
     deinit {
@@ -128,11 +134,6 @@ extension SyncMigrationInteractor: SyncMigrationInteracting {
     func syncStateChanged() {
         switch mainRepository.cloudCurrentState {
         case .disabledNotAvailable(let reason): migrationError?(reason)
-        case .enabled(let sync):
-            switch sync {
-            case .synced: migrationEndedSuccessfuly?()
-            default: break
-            }
         default: break
         }
     }

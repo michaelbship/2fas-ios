@@ -35,7 +35,7 @@ final class RequirementCheckWatchHandler {
 }
 
 extension RequirementCheckWatchHandler: RequirementCheckHandling {
-    func checkIfStopSync(using records: [CKRecord], migrationPending: Bool) -> Bool {
+    func checkIfStopSync(using records: [CKRecord], migrationPending: Bool, encryptionPending: Bool) -> Bool {
         Log("RequirementCheckHandler - checkIfStopSync", module: .cloudSync)
         if let infoRecord = records.first(where: { RecordType(rawValue: $0.recordType) == .info }) {
             let info = InfoRecord(record: infoRecord)

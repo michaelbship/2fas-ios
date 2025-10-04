@@ -22,5 +22,5 @@ import CloudKit
 protocol RequirementCheckHandling: AnyObject {
     var newerVersion: (() -> Void)? { get set }
     var cloudEncrypted: ((Info.Encryption?) -> Void)? { get set }
-    func checkIfStopSync(using records: [CKRecord], migrationPending: Bool) -> Bool
+    func checkIfStopSync(using records: [CKRecord], migrationPending: Bool, encryptionPending: Bool) -> Bool
 }

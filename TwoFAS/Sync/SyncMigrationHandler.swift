@@ -21,6 +21,10 @@ import Common
 
 public protocol SyncMigrationHandling: AnyObject {
     var showMigrationToNewestVersion: (() -> Void)? { get set }
+    var migrationEndedSuccessfuly: (() -> Void)? { get set }
+    
+    var reencryptionEndedSuccessfuly: (() -> Void)? { get set }
+    
     var showiCloudIsEncryptedByUser: (() -> Void)? { get set }
     var showiCloudIsEncryptedBySystem: (() -> Void)? { get set }
     var showNeverVersionOfiCloud: (() -> Void)? { get set }
@@ -39,6 +43,10 @@ final class SyncMigrationHandler {
     }
     
     var showMigrationToNewestVersion: (() -> Void)?
+    var migrationEndedSuccessfuly: (() -> Void)?
+    
+    var reencryptionEndedSuccessfuly: (() -> Void)?
+    
     var showiCloudIsEncryptedByUser: (() -> Void)?
     var showiCloudIsEncryptedBySystem: (() -> Void)?
     var showNeverVersionOfiCloud: (() -> Void)?
@@ -55,17 +63,24 @@ final class SyncMigrationHandler {
     private var canChangePassword = false
     private var passwordChangePending: SyncMigrationChangeType?
     private var isMigrating = false
+    private var isReencrypting = false
     private var isiCloudEncryptedByDifferentUserPass = false
     private var enableIfSuccess = false
     
     private let migrationHandler: MigrationHandling
+    private let reencryptionHandler: ReencryptionHandling
     private let syncEncryptionHandler: SyncEncryptionHandler
 
-    init(migrationHandler: MigrationHandling, syncEncryptionHandler: SyncEncryptionHandler) {
+    init(
+        migrationHandler: MigrationHandling,
+        reencryptionHandler: ReencryptionHandling,
+        syncEncryptionHandler: SyncEncryptionHandler
+    ) {
         self.migrationHandler = migrationHandler
+        self.reencryptionHandler = reencryptionHandler
         self.syncEncryptionHandler = syncEncryptionHandler
         
-        migrationHandler.isReencryptionPending = { [weak self] () -> Bool in
+        reencryptionHandler.isReencryptionPending = { [weak self] () -> Bool in
             guard let self, let passwordChangePending else { return false }
             switch passwordChangePending {
             case .system:
@@ -76,28 +91,37 @@ final class SyncMigrationHandler {
             self.passwordChangePending = nil
             return true
         }
+        reencryptionHandler.didFinishReencryption = { [weak self] in
+            self?.reencryptionEndedSuccessfuly?()
+        }
+        
         migrationHandler.isMigratingToV3 = { [weak self] in
             self?.isMigrating = true
             self?.showMigrationToNewestVersion?()
+        }
+        
+        migrationHandler.finishedMigratingToV3 = { [weak self] in
+            self?.isMigrating = false
+            self?.migrationEndedSuccessfuly?()
         }
     }
 }
 
 extension SyncMigrationHandler: SyncMigrationHandling {
     func changePassword(_ password: String) {
-        guard passwordChangePending == nil, !isMigrating else {
+        guard passwordChangePending == nil, !isMigrating, !isReencrypting else {
             return
         }
-        isMigrating = true
+        isReencrypting = true
         passwordChangePending = .password(password)
         changePasswordOrQueue()
     }
     
     func migrateToSystemPassword() {
-        guard passwordChangePending == nil, !isMigrating else {
+        guard passwordChangePending == nil, !isMigrating, !isReencrypting else {
             return
         }
-        isMigrating = true
+        isReencrypting = true
         passwordChangePending = .system
         changePasswordOrQueue()
     }
@@ -114,7 +138,7 @@ extension SyncMigrationHandler: SyncMigrationHandling {
     
     // locally user, but iCloud is using system
     func switchLocallyToUseSystemPassword() {
-        guard passwordChangePending == nil, !isMigrating else {
+        guard passwordChangePending == nil, !isMigrating, !isReencrypting else {
             return
         }
         syncEncryptionHandler.setSystemKey()
@@ -149,7 +173,7 @@ extension SyncMigrationHandler: SyncMigrationHandling {
             case .synced:
                 canChangePassword = true
                 if passwordChangePending == nil {
-                    isMigrating = false
+                    isReencrypting = false
                 }
                 if !changePasswordOrQueue() {
                     if enableIfSuccess {
