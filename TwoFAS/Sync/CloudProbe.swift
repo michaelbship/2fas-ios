@@ -25,12 +25,18 @@ public protocol CloudProbing: AnyObject {
     func checkForVaults(completion: @escaping (Result<[VaultVersion], Error>) -> Void)
 }
 
+public enum CloudProbeError: Error {
+    case operationFailed
+}
+
 public final class CloudProbe: CloudProbing {
     private let container: CKContainer
     private let database: CKDatabase
     
     private var completion: ((Result<[VaultVersion], Error>) -> Void)?
     private var foundVaults: [VaultVersion] = []
+    
+    private var hasError = false
     
     public init() {
         container = CKContainer(identifier: Config.containerIdentifier)
@@ -52,7 +58,7 @@ public final class CloudProbe: CloudProbing {
         queryOperation.resultsLimit = 2
         
         queryOperation.recordMatchedBlock = recordMatchedBlock
-        queryOperation.queryResultBlock = queryResultBlock
+        queryOperation.completionBlock = completionBlock
         
         database.add(queryOperation)
     }
@@ -61,6 +67,7 @@ public final class CloudProbe: CloudProbing {
         switch result {
         case .success(let record):
             guard record.recordType == RecordType.info.rawValue else {
+                hasError = true
                 Log("CloudProbe: Error - incorrect record type!", module: .cloudSync, severity: .error)
                 return
             }
@@ -77,23 +84,20 @@ public final class CloudProbe: CloudProbing {
                 foundVaults.append(VaultVersion.v3)
             }
         case .failure(let error):
+            hasError = true
             Log("CloudProbe: Error while checking Vault  \(error)", module: .cloudSync, severity: .error)
         }
     }
     
-    func queryResultBlock(_ result: Result<CKQueryOperation.Cursor?, any Error>) {
-        defer {
-            completion = nil
-            foundVaults = []
+    func completionBlock() {
+        if self.hasError {
+            completion?(.failure(CloudProbeError.operationFailed))
+        } else {
+            Log("CloudProbe: Query completed!, Vaults found: \(foundVaults.count)", module: .cloudSync)
+            completion?(.success(foundVaults))
         }
-        DispatchQueue.main.async {
-            switch result {
-            case .success:
-                Log("CloudProbe: Query completed!, Vaults found: \(self.foundVaults.count)", module: .cloudSync)
-                self.completion?(.success(self.foundVaults))
-            case .failure(let error):
-                self.completion?(.failure(error))
-            }
-        }
+        completion = nil
+        hasError = false
+        foundVaults = []
     }
 }

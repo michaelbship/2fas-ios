@@ -34,9 +34,11 @@ final class ZoneManager: ZoneManaging {
     
     init() {
         currentZoneID = CKRecordZone.ID(zoneName: Config.vaultV2, ownerName: CKCurrentUserDefaultName)
+        Log("ZoneManager: Default zone is \(Config.vaultV2)", module: .cloudSync)
     }
     
     func setCurrentZoneID(_ zoneName: String) {
+        Log("ZoneManager: Changing zone to \(zoneName)", module: .cloudSync)
         currentZoneID = CKRecordZone.ID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
     }
 }

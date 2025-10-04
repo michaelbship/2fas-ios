@@ -49,8 +49,8 @@ final class ReencryptionHandler {
 extension ReencryptionHandler: ReencryptionHandling {
     var willReencrypt: Bool {
         guard !shouldReencrypt else { return true }
-        Log("ReencryptionHandler: will reencrypt", module: .cloudSync)
         shouldReencrypt = isReencryptionPending?() == true
+        Log("ReencryptionHandler: will reencrypt: \(shouldReencrypt)", module: .cloudSync)
         return shouldReencrypt
     }
     
@@ -58,7 +58,9 @@ extension ReencryptionHandler: ReencryptionHandling {
         guard shouldReencrypt, !isReencrypting else { return (nil, nil) }
         isReencrypting = true
         Log("ReencryptionHandler: encrypting", module: .cloudSync)
-        didStartReencryption?()
+        Task { @MainActor in
+            didStartReencryption?()
+        }
         
         var listForCreationModification = listV3ForModification() ?? []
         infoHandler.update(
@@ -83,7 +85,9 @@ extension ReencryptionHandler: ReencryptionHandling {
         guard isReencrypting else { return }
         Log("ReencryptionHandler: sync succeded", module: .cloudSync)
         isReencrypting = false
-        didFinishReencryption?()
+        Task { @MainActor in
+            didFinishReencryption?()
+        }
     }
 }
 

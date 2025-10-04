@@ -25,7 +25,6 @@ final class MigrationHandler {
     var isMigratingToV3: Callback?
     var finishedMigratingToV3: Callback?
     var clearCloudState: Callback?
-    var syncAgain: Callback?
     
     private(set) var isMigrating = false
     
@@ -48,6 +47,7 @@ extension MigrationHandler: MigrationHandling {
             zoneManager.setCurrentZoneID(Config.vaultV2)
             return
         }
+        if isMigrating { return }
         Log("MigrationHandler: probing cloud", module: .cloudSync)
         do {
             let result = try await withCheckedThrowingContinuation { continuation in
@@ -64,7 +64,9 @@ extension MigrationHandler: MigrationHandling {
             Log("MigrationHandler: awaiting migration to v3", module: .cloudSync)
             zoneManager.setCurrentZoneID(Config.vaultV1)
             isMigrating = true
-            isMigratingToV3?()
+            Task { @MainActor in
+                isMigratingToV3?()
+            }
         } catch {
             Log("MigrationHandler - can't probe cloud", module: .cloudSync, severity: .error)
             zoneManager.setCurrentZoneID(Config.vaultV2)
@@ -82,8 +84,10 @@ extension MigrationHandler: MigrationHandling {
         } else {
             Log("MigrationHandler: migrated", module: .cloudSync)
             isMigrating = false
-            finishedMigratingToV3?()
             ConstStorage.cloudMigratedToV3 = true
+            Task { @MainActor in
+                finishedMigratingToV3?()
+            }
             return false
         }
     }

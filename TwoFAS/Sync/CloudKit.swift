@@ -229,7 +229,7 @@ final class CloudKit {
         clearRecordChanges()
         
         Log(
-            "CloudKit - fetching zone changes, token is set: \(ConstStorage.zoneChangeToken != nil)",
+            "CloudKit - fetching zone changes, token is set: \(ConstStorage.zoneChangeToken != nil), current zone: \(zoneManager.currentZoneID)",
             module: .cloudSync
         )
         

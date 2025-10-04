@@ -106,6 +106,7 @@ final class SyncHandler {
             self?.useriCloudProblem?()
         }
         cloudKit.deleteAllEntries = { [weak self] in self?.itemHandler.purge() }
+        migrationHandler.clearCloudState = { [weak self] in self?.resetStack() }
     }
     
     func didReceiveRemoteNotification(
@@ -240,11 +241,11 @@ final class SyncHandler {
     }
     
     private func migrateIfNeeded() {
+        applyingChanges = false
         if migrationHandler.migrateIfNeeded() {
             resetStack()
-            cloudKit.cloudSync()
+            synchronize()
         } else {
-            applyingChanges = false
             syncCompleted()
         }
     }
