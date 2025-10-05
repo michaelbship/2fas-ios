@@ -18,6 +18,7 @@
 //
 
 import SwiftUI
+import Common
 
 struct SyncMigrationToNewestVersionView: View {
     @ObservedObject
@@ -35,19 +36,23 @@ struct SyncMigrationToNewestVersionView: View {
                         .font(.title)
                         .multilineTextAlignment(.center)
                     Text(verbatim: T.Backup.migrationSubtitle)
-                        .font(.body)
+                        .font(.title2)
                         .fontWeight(.medium)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Color(Theme.Colors.Text.theme))
+                    Spacer()
                     Text(verbatim: T.Backup.migrationDescription)
                         .font(.caption)
                         .minimumScaleFactor(0.5)
                         .multilineTextAlignment(.center)
+                    Spacer()
                 }
                 Spacer()
                 if presenter.isMigrating {
                     ProgressView()
                         .progressViewStyle(.circular)
+                        .scaleEffect(1.5)
+                        .tint(Color(ThemeColor.theme))
                         .padding(.vertical, Theme.Metrics.doubleMargin)
                 } else {
                     VStack {
@@ -56,12 +61,12 @@ struct SyncMigrationToNewestVersionView: View {
                                 T.Backup.enterPasswordFailure(migrationFailureReason.description),
                                 systemImage: "xmark.circle.fill"
                             )
-                                .font(.caption)
+                                .font(.callout)
                                 .fontWeight(.bold)
                                 .foregroundStyle(Color(Theme.Colors.Text.theme))
                         } else {
                             Label(T.Commons.successEx, systemImage: "checkmark.circle.fill")
-                                .font(.caption)
+                                .font(.callout)
                                 .fontWeight(.bold)
                                 .foregroundStyle(Color.green)
                         }
@@ -80,6 +85,6 @@ struct SyncMigrationToNewestVersionView: View {
             .padding(.vertical, Theme.Metrics.doubleMargin)
         }
         .frame(maxWidth: .infinity)
-        .background(Color(Theme.Colors.Fill.System.third))
+        .background(Color(Theme.Colors.Fill.System.second))
     }
 }
