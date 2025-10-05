@@ -55,7 +55,7 @@ extension MigrationHandler: MigrationHandling {
                     continuation.resume(with: result)
                 }
             }
-            if result.contains(where: { $0 == .v3 }) {
+            if result.contains(where: { $0 == .v3 }) || result.isEmpty {
                 Log("MigrationHandler: probed value - already migrated", module: .cloudSync)
                 zoneManager.setCurrentZoneID(Config.vaultV2)
                 ConstStorage.cloudMigratedToV3 = true
