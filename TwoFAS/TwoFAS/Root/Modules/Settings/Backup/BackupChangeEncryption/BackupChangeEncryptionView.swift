@@ -26,93 +26,140 @@ struct BackupChangeEncryptionView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .center) {
-                VStack(alignment: .center, spacing: Theme.Metrics.standardSpacing) {
-                    List {
-                        Section(T.Backup.encryptionType) {
-                            Picker(T.Backup.encryptionSelect, selection: $presenter.selectedEncryption) {
-                                ForEach(CloudEncryptionType.allCases, id: \.self) { type in
-                                    Text(type.localized)
-                                        .tag(type)
+            ZStack {
+                VStack(alignment: .center) {
+                    VStack(alignment: .center, spacing: Theme.Metrics.standardSpacing) {
+                        Form {
+                            Section {
+                                Text(T.Backup.encryptionSelect)
+                                    .font(.body)
+                                Picker(selection: $presenter.selectedEncryption) {
+                                    ForEach(CloudEncryptionType.allCases, id: \.self) { type in
+                                        Text(type.localized)
+                                            .tag(type)
+                                    }
+                                } label: {
+                                    EmptyView()
                                 }
+                                .pickerStyle(.segmented)
+                                .tint(Color(Theme.Colors.Fill.theme))
+                            } header: {
+                                Spacer()
+                                    .frame(height: 0)
                             }
-                            .pickerStyle(.menu)
-                            .tint(Color(Theme.Colors.Fill.theme))
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            
+                            if presenter.selectedEncryption == .user {
+                                Section(
+                                    content: {
+                                        passwordInput
+                                    },
+                                    header: {
+                                        presenter.changingPassword ?
+                                        Text(verbatim: T.Backup.encryptionChangePassword) :
+                                        Text(verbatim: T.Backup.encryptionEnterPassword)
+                                    },
+                                    footer: {
+                                        Text(verbatim: T.Backup.encryptionPasswordDescription)
+                                            .font(.caption2)
+                                            .minimumScaleFactor(0.8)
+                                    }
+                                )
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                            }
                         }
-                        if presenter.selectedEncryption == .user {
-                            Section(
-                                content: {
-                                    SecureField(T.Backup.encryptionEnterPassword, text: $presenter.password)
-                                },
-                                header: {
-                                    presenter.changingPassword ?
-                                    Text(verbatim: T.Backup.encryptionChangePassword) :
-                                    Text(verbatim: T.Backup.encryptionEnterPassword)
-                                },
-                                footer: {
-                                    Text(verbatim: T.Backup.encryptionPasswordDescription)
-                                        .font(.caption2)
-                                        .minimumScaleFactor(0.8)
-                                })
+                        .scrollContentBackground(.hidden)
+                    }
+                    .disabled(presenter.isChangingEncryption)
+                    .padding(.bottom, Theme.Metrics.doubleMargin)
+                    .navigationTitle(T.Backup.encryptionChangeTitle)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                presenter.close()
+                            }) {
+                                Text(T.Commons.close)
+                                    .tint(Color(Theme.Colors.Text.theme))
+                            }
+                            .disabled(presenter.isChangingEncryption)
                         }
                     }
+                }
+                
+                VStack {
                     Spacer()
-                        .frame(maxHeight: Theme.Metrics.doubleMargin)
                     if presenter.isChangingEncryption {
                         ProgressView()
                             .progressViewStyle(.circular)
+                            .scaleEffect(1.5)
+                            .tint(Color(ThemeColor.theme))
+                            .padding(.bottom, Theme.Metrics.doubleMargin)
                     } else {
-                        VStack(spacing: Theme.Metrics.doubleMargin) {
+                        VStack(alignment: .center, spacing: Theme.Metrics.doubleMargin) {
                             if let migrationFailureReason = presenter.migrationFailureReason {
                                 Label(
                                     T.Backup.enterPasswordFailure(migrationFailureReason.description),
                                     systemImage: "xmark.circle.fill"
                                 )
-                                    .font(.caption)
-                                    .fontWeight(.bold)
-                                    .foregroundStyle(Color(Theme.Colors.Text.theme))
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                                .foregroundStyle(Color(Theme.Colors.Text.theme))
                             }
-                            Button {
-                                dismissKeyboard()
-                                presenter.applyChange()
-                            } label: {
-                                Text(verbatim: T.Commons.apply)
-                                    .frame(maxWidth: .infinity)
-                            }
-                            .modify {
-                                if presenter.changePasswordEnabled {
-                                    $0.buttonStyle(RoundedFilledButtonStyle())
-                                } else {
-                                    $0.buttonStyle(RoundedFilledInactiveButtonStyle())
-                                }
-                            }
-                            .frame(maxWidth: Theme.Metrics.componentWidth)
-                            .padding(.bottom, Theme.Metrics.doubleMargin)
-                            .disabled(!presenter.changePasswordEnabled)
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                }
-                .disabled(presenter.isChangingEncryption)
-                .padding(.vertical, Theme.Metrics.doubleMargin)
-                .navigationTitle(T.Backup.encryptionChangeTitle)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            presenter.close()
-                        }) {
-                            Text(T.Commons.close)
-                                .tint(Color(Theme.Colors.Text.theme))
+                    if !presenter.isChangingEncryption {
+                        Button {
+                            dismissKeyboard()
+                            presenter.applyChange()
+                        } label: {
+                            Text(verbatim: T.Commons.apply)
+                                .frame(maxWidth: .infinity)
                         }
-                        .disabled(presenter.isChangingEncryption)
+                        .modify {
+                            if presenter.changePasswordEnabled {
+                                $0.buttonStyle(RoundedFilledButtonStyle())
+                            } else {
+                                $0.buttonStyle(RoundedFilledInactiveButtonStyle())
+                            }
+                        }
+                        .frame(maxWidth: Theme.Metrics.componentWidth)
+                        .padding(.horizontal, Theme.Metrics.doubleMargin)
+                        .padding(.bottom, Theme.Metrics.doubleMargin)
+                        .disabled(!presenter.changePasswordEnabled)
                     }
                 }
             }
         }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity)
-        .background(Color(Theme.Colors.Fill.System.third))
+        .background(Color(Theme.Colors.Fill.background))
         .onAppear {
             presenter.onAppear()
+        }
+    }
+    
+    @ViewBuilder
+    private var passwordInput: some View {
+        VStack(spacing: Theme.Metrics.halfSpacing) {
+            SecureField(T.Backup.encryptionEnterPassword, text: $presenter.password)
+                .onSubmit {
+                    if presenter.changePasswordEnabled {
+                        presenter.applyChange()
+                    } else {
+                        dismissKeyboard()
+                    }
+                }
+            Divider()
+                .overlay {
+                    Rectangle()
+                        .foregroundStyle(!presenter.changePasswordEnabled ?
+                                         Color(Theme.Colors.Text.inactive) :
+                                            Color(Theme.Colors.Line.primaryLine))
+                }
         }
     }
 }
