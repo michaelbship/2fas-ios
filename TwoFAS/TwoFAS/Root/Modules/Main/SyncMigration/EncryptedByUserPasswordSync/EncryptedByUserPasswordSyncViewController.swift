@@ -25,13 +25,13 @@ final class EncryptedByUserPasswordSyncViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = Theme.Colors.Fill.background
         let vc = UIHostingController(rootView: EncryptedByUserPasswordSyncView(presenter: presenter))
         vc.willMove(toParent: self)
         addChild(vc)
         view.addSubview(vc.view)
         vc.view.pinToParent()
-        vc.view.backgroundColor = Theme.Colors.Fill.System.third
+        vc.view.backgroundColor = Theme.Colors.Fill.background
         vc.didMove(toParent: self)
     }
 }
