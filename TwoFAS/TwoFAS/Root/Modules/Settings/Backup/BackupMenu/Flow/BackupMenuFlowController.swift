@@ -28,6 +28,8 @@ protocol BackupMenuFlowControlling: AnyObject {
     func toFileImport()
     func toFileExport()
     func toDeleteCloudBackup()
+    func toChangeEncryption()
+    func toManageAppleWatch()
 }
 
 final class BackupMenuFlowController: FlowController {
@@ -87,6 +89,26 @@ extension BackupMenuFlowController: BackupMenuFlowControlling {
     
     func toDeleteCloudBackup() {
         BackupDeleteFlowController.present(on: viewController, parent: self)
+    }
+    
+    func toChangeEncryption() {
+        BackupChangeEncryptionFlowController.present(on: viewController, parent: self)
+    }
+    
+    func toManageAppleWatch() {
+        ManageWatchFlowController.present(on: viewController, parent: self)
+    }
+}
+
+extension BackupMenuFlowController: BackupChangeEncryptionFlowControllerParent {
+    func closeChangeEncryption() {
+        viewController.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension BackupMenuFlowController: ManageWatchFlowControllerParent {
+    func closeManageFlow() {
+        viewController.dismiss(animated: true, completion: nil)
     }
 }
 
