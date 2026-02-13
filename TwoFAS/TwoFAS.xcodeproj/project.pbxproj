@@ -1193,6 +1193,7 @@
 		C2E7C3C32ADB2B9C00478D89 /* MainRepositoryImpl+News.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D39DE42823324E00E864E9 /* MainRepositoryImpl+News.swift */; };
 		C2E7C3C42ADB2B9C00478D89 /* MainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D44E69275C14790043F5D6 /* MainRepository.swift */; };
 		C2E7C3C52ADB2B9C00478D89 /* MainRepositoryImpl+Export.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2404854276529FF0076376E /* MainRepositoryImpl+Export.swift */; };
+		E3273540D9FC4F87BBF08B01 /* MainRepositoryImpl+iCloudSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9EA85F949F462282199836 /* MainRepositoryImpl+iCloudSync.swift */; };
 		C2E7C3C62ADB2B9C00478D89 /* MainRepositoryImpl+Cloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27BE51C275D80230090CA12 /* MainRepositoryImpl+Cloud.swift */; };
 		C2E7C3C72ADB2B9C00478D89 /* MainRepositoryImpl+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27A1EAB2912797200702DB9 /* MainRepositoryImpl+Camera.swift */; };
 		C2E7C3C82ADB2B9C00478D89 /* MainRepositoryImpl+DeviceName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C278122C27FA4B5A00F31453 /* MainRepositoryImpl+DeviceName.swift */; };
@@ -2190,6 +2191,7 @@
 		C24048492765218C0076376E /* WidgetWarningPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetWarningPresenter.swift; sourceTree = "<group>"; };
 		C240484B276522320076376E /* WidgetWarningFlowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetWarningFlowController.swift; sourceTree = "<group>"; };
 		C2404854276529FF0076376E /* MainRepositoryImpl+Export.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainRepositoryImpl+Export.swift"; sourceTree = "<group>"; };
+		3E9EA85F949F462282199836 /* MainRepositoryImpl+iCloudSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainRepositoryImpl+iCloudSync.swift"; sourceTree = "<group>"; };
 		C240485727653DE30076376E /* ImporterEnterPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImporterEnterPasswordViewController.swift; sourceTree = "<group>"; };
 		C2404859276540970076376E /* ImporterEnterPasswordPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImporterEnterPasswordPresenter.swift; sourceTree = "<group>"; };
 		C240485B276549C00076376E /* ImportFromFileInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportFromFileInteractor.swift; sourceTree = "<group>"; };
@@ -7564,6 +7566,7 @@
 				C27BE518275D6E0D0090CA12 /* MainRepositoryImpl+Services.swift */,
 				C27BE51C275D80230090CA12 /* MainRepositoryImpl+Cloud.swift */,
 				C2404854276529FF0076376E /* MainRepositoryImpl+Export.swift */,
+				3E9EA85F949F462282199836 /* MainRepositoryImpl+iCloudSync.swift */,
 				C2069C8E28C2866900321E44 /* MainRepositoryImpl+Import.swift */,
 				C2058E06277D21FB0015F17E /* MainRepositoryImpl+Storage.swift */,
 				C249AF69278A4148005F9D80 /* MainRepositoryImpl+NewAppVersion.swift */,
@@ -10812,6 +10815,7 @@
 				C2E7C40E2ADB2BE500478D89 /* LastPassData.swift in Sources */,
 				C2E7C3FC2ADB2BB400478D89 /* ListNewsStorageInteractor.swift in Sources */,
 				C2E7C3C52ADB2B9C00478D89 /* MainRepositoryImpl+Export.swift in Sources */,
+				E3273540D9FC4F87BBF08B01 /* MainRepositoryImpl+iCloudSync.swift in Sources */,
 				C2E7C3EC2ADB2BB400478D89 /* TokenInteractor.swift in Sources */,
 				C2E7C40A2ADB2BE500478D89 /* ExternalLinks.swift in Sources */,
 				C2E7C3FE2ADB2BB400478D89 /* ScanInteractor.swift in Sources */,

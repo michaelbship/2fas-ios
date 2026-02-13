@@ -182,5 +182,8 @@ final class MainRepositoryImpl: MainRepository {
         storage.addUserPresentableError { [weak self] error in
             self?.storageError?(error)
         }
+
+        // Start iCloud Drive auto-export observer
+        startICloudSyncObserver()
     }
 }
