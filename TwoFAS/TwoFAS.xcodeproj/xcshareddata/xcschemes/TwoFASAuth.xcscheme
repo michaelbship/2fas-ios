@@ -88,7 +88,7 @@
       launchAutomaticallySubstyle = "2">
       <RemoteRunnable
          runnableDebuggingMode = "1"
-         BundleIdentifier = "com.twofas.org"
+         BundleIdentifier = "com.michaelbship.twofas"
          RemotePath = "/var/containers/Bundle/Application/20B831F6-D78B-41E1-9A69-1530A84C4BFE/TwoFAS.app">
       </RemoteRunnable>
       <MacroExpansion>

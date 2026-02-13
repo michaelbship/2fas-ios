@@ -23,7 +23,7 @@ public enum Config {
     public static let tosURL = URL(string: "https://2fas.com/terms-of-service/")!
     public static let allowedTimeIntervalDifference: Int = 5
         
-    public static let suiteName = "group.twofas.com"
+    public static let suiteName = "group.com.michaelbship.twofas"
     
     public static let exchangeTokenKey = "exchangeTokenKey"
     

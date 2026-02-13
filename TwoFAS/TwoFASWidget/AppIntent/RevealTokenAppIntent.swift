@@ -39,7 +39,7 @@ struct RevealTokenAppIntent: AppIntent {
     
     @MainActor
     func perform() async throws -> some IntentResult {
-        let defaults = UserDefaults(suiteName: "group.twofas.com")
+        let defaults = UserDefaults(suiteName: "group.com.michaelbship.twofas")
         defaults?.set(Date().timeIntervalSince1970, forKey: CommonKeys.tapDate)
         defaults?.set(secret, forKey: CommonKeys.tapSecret)
         defaults?.synchronize()

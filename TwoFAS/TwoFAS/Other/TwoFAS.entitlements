@@ -21,11 +21,11 @@
 	<string>$(TeamIdentifierPrefix)$(CFBundleIdentifier)</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.twofas.com</string>
+		<string>group.com.michaelbship.twofas</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.twofas.org</string>
+		<string>$(AppIdentifierPrefix)com.michaelbship.twofas</string>
 	</array>
 </dict>
 </plist>

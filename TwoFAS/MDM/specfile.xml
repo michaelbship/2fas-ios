@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <managedAppConfiguration>
 	<version>1.0.0</version>
-	<bundleId>com.twofas.org</bundleId>
+	<bundleId>com.michaelbship.twofas</bundleId>
 	<dict>
 		<boolean keyName="blockBackup">
 			<constraints nullable="true">
