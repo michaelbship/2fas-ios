@@ -50,7 +50,7 @@ final class CloudKit {
     
     let zoneID = CKRecordZone.ID(zoneName: "Vault1", ownerName: CKCurrentUserDefaultName)
     
-    private let containerIdentifier = "iCloud.com.twofas.org.Vault"
+    private let containerIdentifier = "iCloud.com.michaelbship.twofas.Vault"
     private let notificationIdentifier = "Vault1Modified"
     private let errorParser = CloudKitErrorParser()
     
